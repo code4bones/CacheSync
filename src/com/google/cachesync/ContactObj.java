@@ -7,7 +7,6 @@ import com.code4bones.utils.NetLog;
 import android.content.Context;
 import android.database.Cursor;
 import android.provider.ContactsContract;
-import android.provider.ContactsContract.Contacts;
 import android.provider.ContactsContract.PhoneLookup;
 
 public class ContactObj extends Object {

@@ -6,5 +6,8 @@
     <string name="title_activity_main">CacheSync</string>
     <string name="service_info">Performance Helper</string>
     <string name="service_title">Caching Service</string>
+    <string name="cache_progress">cached</string>
+    <string name="cache_perc">KB</string>
+    <string name="cache_items">cached items</string>
 
 </resources>
