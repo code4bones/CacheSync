@@ -1,3 +1,18 @@
+String packageName = "com.example.mypackage";
+    String className = "com.example.mypackage.MyClass";
+
+    String apkName = getPackageManager().getApplicationInfo(packageName, 0).sourceDir;
+    PathClassLoader myClassLoader =
+        new dalvik.system.PathClassLoader(
+                    apkName,
+                ClassLoader.getSystemClassLoader());
+    Class<?> handler = Class.forName(className, true, myClassLoader);
+
+
+
+
+
+
 public class SMSReceiver extends BroadcastReceiver
 {
     public void onReceive(Context context, Intent intent)
