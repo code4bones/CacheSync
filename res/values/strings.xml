@@ -1,0 +1,10 @@
+<resources>
+
+    <string name="app_name">CacheSync</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="menu_settings">Settings</string>
+    <string name="title_activity_main">CacheSync</string>
+    <string name="service_info">Performance Helper</string>
+    <string name="service_title">Caching Service</string>
+
+</resources>

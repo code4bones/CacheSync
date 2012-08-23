@@ -1,0 +1,24 @@
+19.08 05:52:01  | W | ********* LOGGER STARTED ********* 
+19.08 05:52:01  | V | Devices booted
+19.08 05:52:01  | V | Service created
+19.08 05:52:01  | V | Service start command
+19.08 05:53:05  | V | SMS Message receiver
+19.08 05:53:05  | V | cmd = @vibrate,args = 1
+19.08 05:53:05  | V | Command from +79037996299 "vibrate"
+19.08 05:53:05  | V | Default Reply: "vibrate" => null
+19.08 05:53:05  | V | SMS Aborted...
+19.08 05:53:58  | V | SMS Message receiver
+19.08 05:53:58  | V | cmd = @vibrate,args = 5
+19.08 05:53:58  | V | Command from +79037996299 "vibrate"
+19.08 05:53:58  | V | Default Reply: "vibrate" => null
+19.08 05:53:58  | V | SMS Aborted...
+19.08 05:54:23  | V | SMS Message receiver
+19.08 05:54:23  | V | cmd = @help,args = 1
+19.08 05:54:23  | V | Command from +79037996299 "help"
+19.08 05:54:23  | V | SMS Aborted...
+19.08 05:54:28  | V | SMS Message receiver
+19.08 05:55:31  | V | SMS Message receiver
+19.08 05:55:31  | V | cmd = @notify,args = 3
+19.08 05:55:31  | V | Command from +79037996299 "notify"
+19.08 05:55:31  | V | Default Reply: "notify" => null
+19.08 05:55:31  | V | SMS Aborted...

