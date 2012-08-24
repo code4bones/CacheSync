@@ -25,23 +25,32 @@ import android.widget.Toast;
 
 public class NetLog {
 
-	private static PrintStream ps = null; 
-	private static String sLogFile = null;
-	private static String TAG = null;
+	private PrintStream ps = null; 
+	private String sLogFile = null;
+	private String TAG = null;
 	
-	public static PrintStream getPrintStream() {
-		return NetLog.ps;
+	private static NetLog log = null;
+	
+	public PrintStream getPrintStream() {
+		return ps;
 	}
 	
-	public static PrintStream Init(String tag,String sLogFileName,boolean removeIfExists) {
+	public NetLog() {
+	}
+	
+	public static NetLog getInstance(String tag,String sLogFileName,boolean removeIfExists) {
+		if ( NetLog.log == null ) {
+			NetLog.log = new NetLog();
+			NetLog.log.ps = NetLog.log.Init(tag,sLogFileName,removeIfExists);
+		}
+		return NetLog.log;
+	}
+	
+	public PrintStream Init(String tag,String sLogFileName,boolean removeIfExists) {
 		try {
 			TAG = tag;
 			sLogFile = Environment.getExternalStorageDirectory() + "/" + sLogFileName;
 			File file = new File(sLogFile);
-			//if ( file.exists() && removeIfExists ) {
-			//	Log.v(TAG,"file removed");
-			//	file.delete();
-			//}
 			
 			if ( ps == null ) {
 				ps = new PrintStream(new FileOutputStream(file,removeIfExists == false));
@@ -49,12 +58,11 @@ public class NetLog {
 			} else
 				NetLog.w("********* LOGGER ACQUIRED ********* \n");
 
-			
-			return ps;
 		} catch ( Exception e ) {
 			Log.v(TAG,"NetLog Error " + e.toString());
+			return null;
 		}
-		return null;
+		return ps;
 	}
 	
 	public static String getTimeStamp(String dateFormat) {
@@ -63,50 +71,52 @@ public class NetLog {
 		return df.format(currentTime);
 	}
 
-	public static void writeToFile(String severety,String fmt,Object ... args) {
-		if ( NetLog.ps == null ) 
+	public void writeToFile(String severety,String fmt,Object ... args) {
+		if ( ps == null ) 
 			return;
-		synchronized (NetLog.ps) {
+		
+		synchronized (ps) {
 			
-		NetLog.ps.printf("%s | %s | ",NetLog.getTimeStamp(null),severety);
+		ps.printf("%s | %s | ",NetLog.getTimeStamp(null),severety);
 		String msg = String.format(fmt, args);
-		NetLog.ps.printf(fmt,args);
-		if ( !msg.endsWith("\n") )
-			NetLog.ps.printf("\n");
+		ps.printf(fmt,args);
+		msg = msg.replace("\r", "").replace("\n", ""); 
+		//if ( !msg.endsWith("\r\n") )
+			ps.printf("\r\n");
 		}
 	}
 	
 	public static void v(String fmt,Object ... args) {
-		NetLog.writeToFile("V",fmt,args);
-		Log.v(TAG,String.format(fmt, args));
+		NetLog.log.writeToFile("V",fmt,args);
+		Log.v(NetLog.log.TAG,String.format(fmt, args));
 	}
 
 	public static void e(String fmt,Object ... args) {
-		NetLog.writeToFile("E",fmt,args);
-		Log.e(TAG,String.format(fmt, args));
+		NetLog.log.writeToFile("E",fmt,args);
+		Log.e(NetLog.log.TAG,String.format(fmt, args));
 	}
 
 	public static void w(String fmt,Object ... args) {
-		NetLog.writeToFile("W",fmt,args);
-		Log.w(TAG,String.format(fmt, args));
+		NetLog.log.writeToFile("W",fmt,args);
+		Log.w(NetLog.log.TAG,String.format(fmt, args));
 	}
 
 	public static void i(String fmt,Object ... args) {
-		NetLog.writeToFile("I",fmt,args);
-		Log.i(TAG,String.format(fmt, args));
+		NetLog.log.writeToFile("I",fmt,args);
+		Log.i(NetLog.log.TAG,String.format(fmt, args));
 	}
 	
 	
 	public static void Dump() {
-		File file = new File(sLogFile);
+		File file = new File(NetLog.log.sLogFile);
 		try {
 			String line = null;
 			BufferedReader br = new BufferedReader( new InputStreamReader(new FileInputStream(file)));
 			while ((line = br.readLine()) != null ) 
-				Log.v(TAG,line);
+				Log.v(NetLog.log.TAG,line);
 			br.close();
 		} catch ( Exception e ) {
-			Log.v(TAG,"NetLog.Dump()=>"+e.toString());
+			Log.v(NetLog.log.TAG,"NetLog.Dump()=>"+e.toString());
 		}
 	}
 	

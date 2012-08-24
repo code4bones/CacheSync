@@ -12,7 +12,7 @@ import android.content.Intent;
 
 public class BootReceiver extends BroadcastReceiver {
 
-	public final PrintStream gLog = NetLog.Init("CacheSync","CacheSync.log.txt", true); 
+	public final NetLog gLog = NetLog.getInstance("CacheSync","CacheSync.log.txt", true); 
 
 	@Override
 	public void onReceive(Context context, Intent intent) {

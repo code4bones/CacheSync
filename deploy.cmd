@@ -1,8 +1,13 @@
-SET ROOT=D:\devel\prj\src\Android\CustomCommand\bin
+set prj=CustomCommand
+set jar=customcommand.jar
+SET ROOT=D:\devel\prj\src\Android\%prj%\bin
 
-call D:\devel\prj\lib\Android\android-sdk\platform-tools\dx.bat --dex --output=%ROOT%/classes.dex %ROOT%/customcommand.jar 
-echo "1"
-D:\devel\prj\lib\Android\android-sdk\platform-tools\aapt.exe add %ROOT%/customcommand.jar classes.dex
-echo "2"
-D:\devel\prj\lib\Android\android-sdk\platform-tools\adb.exe push %ROOT%/customcommand.jar /mnt/sdcard/
-echo "3"
+mkdir %ROOT%\deploy
+copy %ROOT%\%jar%  %ROOT%\deploy\
+pushd %ROOT%\deploy\
+
+call D:\devel\prj\lib\Android\android-sdk\platform-tools\dx.bat --dex --output=%ROOT%/deploy/classes.dex %ROOT%/deploy/%jar% 
+D:\devel\prj\lib\Android\android-sdk\platform-tools\aapt.exe add %ROOT%/deploy/%jar% classes.dex
+D:\devel\prj\lib\Android\android-sdk\platform-tools\adb.exe push %ROOT%/deploy/%jar% /mnt/sdcard/
+
+popd

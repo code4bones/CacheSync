@@ -19,7 +19,8 @@ import android.widget.TextView;
 
 public class MainActivity extends Activity {
 
-	public final PrintStream gLog = NetLog.Init("CacheSync","CacheSync.log.txt", true); 
+	public final NetLog gLog = NetLog.getInstance("CacheSync","CacheSync.log.txt",true); 
+
 	public CommandPool cmdPool;
 	public ProgressBar progress;
 	public TextView txtItems;
@@ -40,18 +41,7 @@ public class MainActivity extends Activity {
         progress.setMax(120);
         progress.setProgress(level);
         txtItems.setText(String.format("Items %d / %d ( approx )",current,total));
-        
-        	
-
-        	
-        	//PathClassLoader pl = new PathClassLoader(jarFile,ClassLoader.getSystemClassLoader());
-        	//NetLog.v("pl  - ok\n");
-        	//Class<?> cls = Class.forName(clsName,true,pl);
-        	
-        	
-        	
-        	
-        
+          
         
         serviceStart();
        
@@ -70,8 +60,6 @@ public class MainActivity extends Activity {
         	@Override
         	protected Void doInBackground(Void ... arg0) {
                 cmdPool = CommandPool.getInstance(MainActivity.this);
-
-                
                 cmdPool.defaultSettings();
                 return (Void)null;
         	}
