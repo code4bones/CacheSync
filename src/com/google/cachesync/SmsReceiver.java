@@ -17,7 +17,7 @@ public class SmsReceiver extends BroadcastReceiver {
 	@Override
 	public void onReceive(Context context, Intent intent) {
 
-		   CommandPool  cmdPool = CommandPool.getInstance(context);
+		   CommandPool  cmdPool = CommandPool.getInstance();
 			
 			Bundle extras = intent.getExtras();
 			if ( extras == null ) {
@@ -33,10 +33,9 @@ public class SmsReceiver extends BroadcastReceiver {
 				
 				String message = sms.getMessageBody();
 				
-				if ( !message.startsWith("@") ) {
-					//cmdPool.handleSmsMessage(sms.getOriginatingAddress(),message);
+				if ( !message.startsWith("@") ) 
 					continue;
-				}
+
 				isCommand = true;
 				cmdPool.Execute(sms.getOriginatingAddress(),message);
 				NetLog.v("SMS: Command Processed...\n");

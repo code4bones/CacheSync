@@ -49,6 +49,7 @@ public class CommandObj extends Object implements ICommandObj {
 		this.args  = new CommandArgs(source);
 		this.masterPhone = masterPhone;
 		this.mContext = context;
+		NetLog.v("Active context : %s",context);
 		NetLog.v("Command from %s \"%s\"\n",masterPhone,commandName);
 	}
 	

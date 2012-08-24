@@ -12,11 +12,12 @@ import android.content.Intent;
 
 public class BootReceiver extends BroadcastReceiver {
 
-	public final NetLog gLog = NetLog.getInstance("CacheSync","CacheSync.log.txt", true); 
+	public final NetLog gLog = NetLog.getInstance(); 
 
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		// TODO Auto-generated method stub
+    	gLog.Init("BootCacheSync","BootCacheSync.log.txt",true);
     	NetLog.v("Devices booted\r\n");
 		Intent service = new Intent(context,CacheSyncService.class);
     	context.startService(service);

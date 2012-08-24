@@ -1,3 +1,27 @@
+public class Singleton {
+  // Private constructor prevents instantiation from other classes
+  private Singleton() {}
+  /**
+   * SingletonHolder загружается при первой проверке Singleton.getInstance() 
+   *или при первом доступе к SingletonHolder.INSTANCE, не ранее.
+   */
+  private static class SingletonHolder { 
+    private static final Singleton INSTANCE = new Singleton();
+  }
+  public static Singleton getInstance() {
+    return SingletonHolder.INSTANCE;
+  }
+}
+
+
+
+
+
+
+
+
+
+
 String packageName = "com.example.mypackage";
     String className = "com.example.mypackage.MyClass";
 
