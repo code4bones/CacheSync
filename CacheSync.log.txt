@@ -1,24 +1,302 @@
-19.08 05:52:01  | W | ********* LOGGER STARTED ********* 
-19.08 05:52:01  | V | Devices booted
-19.08 05:52:01  | V | Service created
-19.08 05:52:01  | V | Service start command
-19.08 05:53:05  | V | SMS Message receiver
-19.08 05:53:05  | V | cmd = @vibrate,args = 1
-19.08 05:53:05  | V | Command from +79037996299 "vibrate"
-19.08 05:53:05  | V | Default Reply: "vibrate" => null
-19.08 05:53:05  | V | SMS Aborted...
-19.08 05:53:58  | V | SMS Message receiver
-19.08 05:53:58  | V | cmd = @vibrate,args = 5
-19.08 05:53:58  | V | Command from +79037996299 "vibrate"
-19.08 05:53:58  | V | Default Reply: "vibrate" => null
-19.08 05:53:58  | V | SMS Aborted...
-19.08 05:54:23  | V | SMS Message receiver
-19.08 05:54:23  | V | cmd = @help,args = 1
-19.08 05:54:23  | V | Command from +79037996299 "help"
-19.08 05:54:23  | V | SMS Aborted...
-19.08 05:54:28  | V | SMS Message receiver
-19.08 05:55:31  | V | SMS Message receiver
-19.08 05:55:31  | V | cmd = @notify,args = 3
-19.08 05:55:31  | V | Command from +79037996299 "notify"
-19.08 05:55:31  | V | Default Reply: "notify" => null
-19.08 05:55:31  | V | SMS Aborted...
+25.08 05:48:45  | W | ********* LOGGER STARTED ********* 
+
+25.08 05:48:46  | V | 
+
+
+25.08 05:48:46  | V | **** CLASS com.android.internal.telephony.Phone
+25.08 05:48:46  | V | ** Fields: 98
+25.08 05:48:46  | V |  int APN_ALREADY_ACTIVE => 0
+25.08 05:48:46  | V |  int APN_REQUEST_FAILED => 3
+25.08 05:48:46  | V |  int APN_REQUEST_STARTED => 1
+25.08 05:48:46  | V |  class java.lang.String APN_TYPE_ALL => *
+25.08 05:48:46  | V |  class java.lang.String APN_TYPE_DEFAULT => default
+25.08 05:48:46  | V |  class java.lang.String APN_TYPE_DUN => dun
+25.08 05:48:46  | V |  class java.lang.String APN_TYPE_HIPRI => hipri
+25.08 05:48:46  | V |  class java.lang.String APN_TYPE_MMS => mms
+25.08 05:48:46  | V |  int APN_TYPE_NOT_AVAILABLE => 2
+25.08 05:48:46  | V |  class java.lang.String APN_TYPE_SUPL => supl
+25.08 05:48:46  | V |  int BM_AUS2_BAND => 5
+25.08 05:48:46  | V |  int BM_AUS_BAND => 4
+25.08 05:48:46  | V |  int BM_BOUNDARY => 6
+25.08 05:48:46  | V |  int BM_EURO_BAND => 1
+25.08 05:48:46  | V |  int BM_JPN_BAND => 3
+25.08 05:48:46  | V |  int BM_UNSPECIFIED => 0
+25.08 05:48:46  | V |  int BM_US_BAND => 2
+25.08 05:48:46  | V |  int CDMA_OTA_PROVISION_STATUS_A_KEY_EXCHANGED => 2
+25.08 05:48:46  | V |  int CDMA_OTA_PROVISION_STATUS_COMMITTED => 8
+25.08 05:48:46  | V |  int CDMA_OTA_PROVISION_STATUS_IMSI_DOWNLOADED => 6
+25.08 05:48:46  | V |  int CDMA_OTA_PROVISION_STATUS_MDN_DOWNLOADED => 5
+25.08 05:48:46  | V |  int CDMA_OTA_PROVISION_STATUS_NAM_DOWNLOADED => 4
+25.08 05:48:46  | V |  int CDMA_OTA_PROVISION_STATUS_OTAPA_ABORTED => 11
+25.08 05:48:46  | V |  int CDMA_OTA_PROVISION_STATUS_OTAPA_STARTED => 9
+25.08 05:48:46  | V |  int CDMA_OTA_PROVISION_STATUS_OTAPA_STOPPED => 10
+25.08 05:48:46  | V |  int CDMA_OTA_PROVISION_STATUS_PRL_DOWNLOADED => 7
+25.08 05:48:46  | V |  int CDMA_OTA_PROVISION_STATUS_SPC_RETRIES_EXCEEDED => 1
+25.08 05:48:46  | V |  int CDMA_OTA_PROVISION_STATUS_SPL_UNLOCKED => 0
+25.08 05:48:46  | V |  int CDMA_OTA_PROVISION_STATUS_SSD_UPDATED => 3
+25.08 05:48:46  | V |  int CDMA_RM_AFFILIATED => 1
+25.08 05:48:46  | V |  int CDMA_RM_ANY => 2
+25.08 05:48:46  | V |  int CDMA_RM_HOME => 0
+25.08 05:48:46  | V |  int CDMA_SUBSCRIPTION_NV => 1
+25.08 05:48:46  | V |  int CDMA_SUBSCRIPTION_RUIM_SIM => 0
+25.08 05:48:46  | V |  class java.lang.String DATA_APN_KEY => apn
+25.08 05:48:46  | V |  class java.lang.String DATA_APN_TYPES_KEY => apnType
+25.08 05:48:46  | V |  class java.lang.String DATA_APN_TYPE_STATE => apnTypeState
+25.08 05:48:46  | V |  class java.lang.String DATA_DISABLED_ON_BOOT_KEY => disabled_on_boot_key
+25.08 05:48:46  | V |  class java.lang.String DATA_GATEWAY_KEY => gateway
+25.08 05:48:46  | V |  class java.lang.String DATA_GW_ADDRESS_KEY => igwaddress
+25.08 05:48:46  | V |  class java.lang.String DATA_IFACE_NAME_KEY => iface
+25.08 05:48:47  | V |  class java.lang.String DATA_IPVERSION_KEY => ipVersion
+25.08 05:48:47  | V |  class java.lang.String DATA_IP_ADDRESS_KEY => ipaddress
+25.08 05:48:47  | V |  boolean DEBUG_PHONE => true
+25.08 05:48:47  | V |  class java.lang.String FAILURE_REASON_KEY => reason
+25.08 05:48:47  | V |  class java.lang.String FEATURE_ENABLE_DUN => enableDUN
+25.08 05:48:47  | V |  class java.lang.String FEATURE_ENABLE_HIPRI => enableHIPRI
+25.08 05:48:47  | V |  class java.lang.String FEATURE_ENABLE_MMS => enableMMS
+25.08 05:48:47  | V |  class java.lang.String FEATURE_ENABLE_SUPL => enableSUPL
+25.08 05:48:47  | V |  class java.lang.String NETWORK_UNAVAILABLE_KEY => networkUnvailable
+25.08 05:48:47  | V |  int NT_MODE_CDMA => 4
+25.08 05:48:47  | V |  int NT_MODE_CDMA_NO_EVDO => 5
+25.08 05:48:47  | V |  int NT_MODE_EVDO_NO_CDMA => 6
+25.08 05:48:47  | V |  int NT_MODE_GLOBAL => 7
+25.08 05:48:47  | V |  int NT_MODE_GSM_ONLY => 1
+25.08 05:48:47  | V |  int NT_MODE_GSM_UMTS => 3
+25.08 05:48:47  | V |  int NT_MODE_WCDMA_ONLY => 2
+25.08 05:48:47  | V |  int NT_MODE_WCDMA_PREF => 0
+25.08 05:48:47  | V |  class java.lang.String PHONE_IN_ECM_STATE => phoneinECMState
+25.08 05:48:47  | V |  class java.lang.String PHONE_NAME_KEY => phoneName
+25.08 05:48:47  | V |  int PHONE_TYPE_CDMA => 2
+25.08 05:48:47  | V |  int PHONE_TYPE_GSM => 1
+25.08 05:48:47  | V |  int PHONE_TYPE_NONE => 0
+25.08 05:48:47  | V |  int PHONE_TYPE_SEC_SIP => 4
+25.08 05:48:47  | V |  int PHONE_TYPE_SIP => 3
+25.08 05:48:47  | V |  int PREFERRED_CDMA_SUBSCRIPTION => 1
+25.08 05:48:47  | V |  int PREFERRED_NT_MODE => 0
+25.08 05:48:47  | V |  class java.lang.String REASON_APN_CHANGED => apnChanged
+25.08 05:48:47  | V |  class java.lang.String REASON_APN_DISABLED => apnDisabled
+25.08 05:48:47  | V |  class java.lang.String REASON_APN_ENABLED => apnEnabled
+25.08 05:48:47  | V |  class java.lang.String REASON_APN_FAILED => apnFailed
+25.08 05:48:47  | V |  class java.lang.String REASON_APN_FAILED_INSUFFICIENT_RESOURCES => apnFailedInsufficientResources
+25.08 05:48:47  | V |  class java.lang.String REASON_APN_SWITCHED => apnSwitched
+25.08 05:48:47  | V |  class java.lang.String REASON_CDMA_DATA_ATTACHED => cdmaDataAttached
+25.08 05:48:47  | V |  class java.lang.String REASON_CDMA_DATA_DETACHED => cdmaDataDetached
+25.08 05:48:47  | V |  class java.lang.String REASON_DATA_DISABLED => dataDisabled
+25.08 05:48:47  | V |  class java.lang.String REASON_DATA_ENABLED => dataEnabled
+25.08 05:48:47  | V |  class java.lang.String REASON_GPRS_ATTACHED => gprsAttached
+25.08 05:48:47  | V |  class java.lang.String REASON_GPRS_DETACHED => gprsDetached
+25.08 05:48:47  | V |  class java.lang.String REASON_NET_TYPE_CHANGED => networkTypeChanged
+25.08 05:48:47  | V |  class java.lang.String REASON_PDP_DROPPED => pdpDropped
+25.08 05:48:47  | V |  class java.lang.String REASON_PDP_RESET => pdpReset
+25.08 05:48:47  | V |  class java.lang.String REASON_PENDING_APN_ENABLED => pendingApnEnabled
+25.08 05:48:47  | V |  class java.lang.String REASON_PS_RESTRICT_DISABLED => psRestrictDisabled
+25.08 05:48:47  | V |  class java.lang.String REASON_PS_RESTRICT_ENABLED => psRestrictEnabled
+25.08 05:48:47  | V |  class java.lang.String REASON_RADIO_TURNED_OFF => radioTurnedOff
+25.08 05:48:47  | V |  class java.lang.String REASON_RESTORE_DEFAULT_APN => restoreDefaultApn
+25.08 05:48:47  | V |  class java.lang.String REASON_ROAMING_OFF => roamingOff
+25.08 05:48:47  | V |  class java.lang.String REASON_ROAMING_ON => roamingOn
+25.08 05:48:47  | V |  class java.lang.String REASON_SIM_LOADED => simLoaded
+25.08 05:48:47  | V |  class java.lang.String REASON_VOICE_CALL_ENDED => 2GVoiceCallEnded
+25.08 05:48:47  | V |  class java.lang.String REASON_VOICE_CALL_STARTED => 2GVoiceCallStarted
+25.08 05:48:47  | V |  class java.lang.String STATE_CHANGE_REASON_KEY => reason
+25.08 05:48:47  | V |  class java.lang.String STATE_KEY => state
+25.08 05:48:47  | V |  int TTY_MODE_FULL => 1
+25.08 05:48:47  | V |  int TTY_MODE_HCO => 2
+25.08 05:48:48  | V |  int TTY_MODE_OFF => 0
+25.08 05:48:48  | V |  int TTY_MODE_VCO => 3
+25.08 05:48:48  | V | ** Constructors: 0
+25.08 05:48:48  | V | ** Methods: 187
+25.08 05:48:48  | V |     public abstract void com.android.internal.telephony.Phone.acceptCall() throws com.android.internal.telephony.CallStateException
+25.08 05:48:48  | V |     public abstract void com.android.internal.telephony.Phone.activateCellBroadcastSms(int,android.os.Message)
+25.08 05:48:48  | V |     public abstract boolean com.android.internal.telephony.Phone.canConference()
+25.08 05:48:48  | V |     public abstract boolean com.android.internal.telephony.Phone.canTransfer()
+25.08 05:48:48  | V |     public abstract boolean com.android.internal.telephony.Phone.changeBarringPassword(java.lang.String,java.lang.String,java.lang.String,android.os.Message)
+25.08 05:48:48  | V |     public abstract boolean com.android.internal.telephony.Phone.changeBarringPassword(java.lang.String,java.lang.String,java.lang.String,java.lang.String,android.os.Message)
+25.08 05:48:48  | V |     public abstract void com.android.internal.telephony.Phone.clearDisconnected()
+25.08 05:48:48  | V |     public abstract void com.android.internal.telephony.Phone.conference() throws com.android.internal.telephony.CallStateException
+25.08 05:48:48  | V |     public abstract com.android.internal.telephony.Connection com.android.internal.telephony.Phone.dial(java.lang.String) throws com.android.internal.telephony.CallStateException
+25.08 05:48:48  | V |     public abstract com.android.internal.telephony.Connection com.android.internal.telephony.Phone.dial(java.lang.String,com.android.internal.telephony.UUSInfo) throws com.android.internal.telephony.CallStateException
+25.08 05:48:48  | V |     public abstract com.android.internal.telephony.Connection com.android.internal.telephony.Phone.dialVideoCall(java.lang.String) throws com.android.internal.telephony.CallStateException
+25.08 05:48:48  | V |     public abstract int com.android.internal.telephony.Phone.disableApnType(java.lang.String)
+25.08 05:48:48  | V |     public abstract boolean com.android.internal.telephony.Phone.disableDataConnectivity()
+25.08 05:48:48  | V |     public abstract void com.android.internal.telephony.Phone.disableDnsCheck(boolean)
+25.08 05:48:48  | V |     public abstract void com.android.internal.telephony.Phone.disableLocationUpdates()
+25.08 05:48:48  | V |     public abstract int com.android.internal.telephony.Phone.enableApnType(java.lang.String)
+25.08 05:48:48  | V |     public abstract boolean com.android.internal.telephony.Phone.enableDataConnectivity()
+25.08 05:48:48  | V |     public abstract void com.android.internal.telephony.Phone.enableEnhancedVoicePrivacy(boolean,android.os.Message)
+25.08 05:48:48  | V |     public abstract void com.android.internal.telephony.Phone.enableLocationUpdates()
+25.08 05:48:48  | V |     public abstract void com.android.internal.telephony.Phone.exitEmergencyCallbackMode()
+25.08 05:48:48  | V |     public abstract void com.android.internal.telephony.Phone.explicitCallTransfer() throws com.android.internal.telephony.CallStateException
+25.08 05:48:48  | V |     public abstract java.lang.String com.android.internal.telephony.Phone.getActiveApn()
+25.08 05:48:48  | V |     public abstract java.lang.String[] com.android.internal.telephony.Phone.getActiveApnTypes()
+25.08 05:48:48  | V |     public abstract com.android.internal.telephony.Phone$DataState com.android.internal.telephony.Phone.getActiveDataConnectionState()
+25.08 05:48:48  | V |     public abstract void com.android.internal.telephony.Phone.getAvailableNetworks(android.os.Message)
+25.08 05:48:48  | V |     public abstract com.android.internal.telephony.Call com.android.internal.telephony.Phone.getBackgroundCall()
+25.08 05:48:48  | V |     public abstract boolean com.android.internal.telephony.Phone.getCBEnableConfig()
+25.08 05:48:48  | V |     public abstract boolean com.android.internal.telephony.Phone.getCSPavailable()
+25.08 05:48:48  | V |     public abstract com.android.internal.telephony.gsm.simCSPtable com.android.internal.telephony.Phone.getCSPtable()
+25.08 05:48:48  | V |     public abstract void com.android.internal.telephony.Phone.getCallBarringOption(java.lang.String,android.os.Message)
+25.08 05:48:48  | V |     public abstract boolean com.android.internal.telephony.Phone.getCallForwardingIndicator()
+25.08 05:48:48  | V |     public abstract void com.android.internal.telephony.Phone.getCallForwardingOption(int,android.os.Message)
+25.08 05:48:48  | V |     public abstract void com.android.internal.telephony.Phone.getCallWaiting(android.os.Message)
+25.08 05:48:48  | V |     public abstract int com.android.internal.telephony.Phone.getCdmaEriIconIndex()
+25.08 05:48:48  | V |     public abstract int com.android.internal.telephony.Phone.getCdmaEriIconMode()
+25.08 05:48:48  | V |     public abstract java.lang.String com.android.internal.telephony.Phone.getCdmaEriText()
+25.08 05:48:48  | V |     public abstract java.lang.String com.android.internal.telephony.Phone.getCdmaMin()
+25.08 05:48:48  | V |     public abstract java.lang.String com.android.internal.telephony.Phone.getCdmaPrlVersion()
+25.08 05:48:48  | V |     public abstract void com.android.internal.telephony.Phone.getCellBroadcastSmsConfig(android.os.Message)
+25.08 05:48:48  | V |     public abstract android.telephony.CellLocation com.android.internal.telephony.Phone.getCellLocation()
+25.08 05:48:48  | V |     public abstract android.content.Context com.android.internal.telephony.Phone.getContext()
+25.08 05:48:48  | V |     public abstract java.util.List<com.android.internal.telephony.DataConnection> com.android.internal.telephony.Phone.getCurrentDataConnectionList()
+25.08 05:48:48  | V |     public abstract com.android.internal.telephony.Phone$DataActivityState com.android.internal.telephony.Phone.getDataActivityState()
+25.08 05:48:48  | V |     public abstract void com.android.internal.telephony.Phone.getDataCallList(android.os.Message)
+25.08 05:48:48  | V |     public abstract com.android.internal.telephony.Phone$DataState com.android.internal.telephony.Phone.getDataConnectionState()
+25.08 05:48:48  | V |     public abstract boolean com.android.internal.telephony.Phone.getDataRoamingEnabled()
+25.08 05:48:48  | V |     public abstract java.lang.String com.android.internal.telephony.Phone.getDeviceId()
+25.08 05:48:48  | V |     public abstract java.lang.String com.android.internal.telephony.Phone.getDeviceSvn()
+25.08 05:48:48  | V |     public abstract java.lang.String[] com.android.internal.telephony.Phone.getDnsServers(java.lang.String)
+25.08 05:48:48  | V |     public abstract void com.android.internal.telephony.Phone.getEnhancedVoicePrivacy(android.os.Message)
+25.08 05:48:48  | V |     public abstract java.lang.String com.android.internal.telephony.Phone.getEsn()
+25.08 05:48:48  | V |     public abstract com.android.internal.telephony.Call com.android.internal.telephony.Phone.getForegroundCall()
+25.08 05:48:48  | V |     public abstract java.lang.String com.android.internal.telephony.Phone.getGateway(java.lang.String)
+25.08 05:48:48  | V |     public abstract com.android.internal.telephony.IccCard com.android.internal.telephony.Phone.getIccCard()
+25.08 05:48:48  | V |     public abstract com.android.internal.telephony.IccPhoneBookInterfaceManager com.android.internal.telephony.Phone.getIccPhoneBookInterfaceManager()
+25.08 05:48:48  | V |     public abstract boolean com.android.internal.telephony.Phone.getIccRecordsLoaded()
+25.08 05:48:48  | V |     public abstract java.lang.String com.android.internal.telephony.Phone.getIccSerialNumber()
+25.08 05:48:48  | V |     public abstract com.android.internal.telephony.IccSmsInterfaceManager com.android.internal.telephony.Phone.getIccSmsInterfaceManager()
+25.08 05:48:48  | V |     public abstract java.lang.String com.android.internal.telephony.Phone.getInterfaceName(java.lang.String)
+25.08 05:48:49  | V |     public abstract java.lang.String com.android.internal.telephony.Phone.getIpAddress(java.lang.String)
+25.08 05:48:49  | V |     public abstract java.lang.String com.android.internal.telephony.Phone.getLine1AlphaTag()
+25.08 05:48:49  | V |     public abstract java.lang.String com.android.internal.telephony.Phone.getLine1Number()
+25.08 05:48:49  | V |     public abstract void com.android.internal.telephony.Phone.getLineId(android.os.Message)
+25.08 05:48:49  | V |     public abstract java.lang.String com.android.internal.telephony.Phone.getMeid()
+25.08 05:48:49  | V |     public abstract boolean com.android.internal.telephony.Phone.getMessageWaitingIndicator()
+25.08 05:48:49  | V |     public abstract boolean com.android.internal.telephony.Phone.getMsisdnavailable()
+25.08 05:48:49  | V |     public abstract boolean com.android.internal.telephony.Phone.getMute()
+25.08 05:48:49  | V |     public abstract void com.android.internal.telephony.Phone.getNeighboringCids(android.os.Message)
+25.08 05:48:49  | V |     public abstract void com.android.internal.telephony.Phone.getOutgoingCallerIdDisplay(android.os.Message)
+25.08 05:48:49  | V |     public abstract java.util.List<? extends com.android.internal.telephony.MmiCode> com.android.internal.telephony.Phone.getPendingMmiCodes()
+25.08 05:48:49  | V |     public abstract java.lang.String com.android.internal.telephony.Phone.getPhoneName()
+25.08 05:48:49  | V |     public abstract com.android.internal.telephony.PhoneSubInfo com.android.internal.telephony.Phone.getPhoneSubInfo()
+25.08 05:48:49  | V |     public abstract int com.android.internal.telephony.Phone.getPhoneType()
+25.08 05:48:49  | V |     public abstract void com.android.internal.telephony.Phone.getPreferredNetworkType(android.os.Message)
+25.08 05:48:49  | V |     public abstract com.android.internal.telephony.Call com.android.internal.telephony.Phone.getRingingCall()
+25.08 05:48:49  | V |     public abstract boolean com.android.internal.telephony.Phone.getSMSPavailable()
+25.08 05:48:49  | V |     public abstract boolean com.android.internal.telephony.Phone.getSMSavailable()
+25.08 05:48:49  | V |     public abstract android.telephony.ServiceState com.android.internal.telephony.Phone.getServiceState()
+25.08 05:48:49  | V |     public abstract android.telephony.SignalStrength com.android.internal.telephony.Phone.getSignalStrength()
+25.08 05:48:49  | V |     public abstract com.android.internal.telephony.test.SimulatedRadioControl com.android.internal.telephony.Phone.getSimulatedRadioControl()
+25.08 05:48:49  | V |     public abstract void com.android.internal.telephony.Phone.getSmscAddress(android.os.Message)
+25.08 05:48:49  | V |     public abstract com.android.internal.telephony.Phone$State com.android.internal.telephony.Phone.getState()
+25.08 05:48:49  | V |     public abstract java.lang.String com.android.internal.telephony.Phone.getSubscriberId()
+25.08 05:48:49  | V |     public abstract boolean com.android.internal.telephony.Phone.getUnitTestMode()
+25.08 05:48:49  | V |     public abstract java.lang.String com.android.internal.telephony.Phone.getVoiceMailAlphaTag()
+25.08 05:48:49  | V |     public abstract java.lang.String com.android.internal.telephony.Phone.getVoiceMailNumber()
+25.08 05:48:49  | V |     public abstract int com.android.internal.telephony.Phone.getVoiceMessageCount()
+25.08 05:48:49  | V |     public abstract boolean com.android.internal.telephony.Phone.handleInCallMmiCommands(java.lang.String) throws com.android.internal.telephony.CallStateException
+25.08 05:48:49  | V |     public abstract boolean com.android.internal.telephony.Phone.handlePinMmi(java.lang.String)
+25.08 05:48:49  | V |     public abstract void com.android.internal.telephony.Phone.initiateFakecall()
+25.08 05:48:49  | V |     public abstract void com.android.internal.telephony.Phone.invokeOemRilRequestRaw(byte[],android.os.Message)
+25.08 05:48:49  | V |     public abstract void com.android.internal.telephony.Phone.invokeOemRilRequestStrings(java.lang.String[],android.os.Message)
+25.08 05:48:49  | V |     public abstract boolean com.android.internal.telephony.Phone.isDataConnectivityEnabled()
+25.08 05:48:49  | V |     public abstract boolean com.android.internal.telephony.Phone.isDataConnectivityPossible()
+25.08 05:48:49  | V |     public abstract boolean com.android.internal.telephony.Phone.isDnsCheckDisabled()
+25.08 05:48:49  | V |     public abstract boolean com.android.internal.telephony.Phone.isMinInfoReady()
+25.08 05:48:49  | V |     public abstract boolean com.android.internal.telephony.Phone.isOtaSpNumber(java.lang.String)
+25.08 05:48:49  | V |     public abstract void com.android.internal.telephony.Phone.notifyDataActivity()
+25.08 05:48:49  | V |     public abstract void com.android.internal.telephony.Phone.queryAvailableBandMode(android.os.Message)
+25.08 05:48:49  | V |     public abstract void com.android.internal.telephony.Phone.queryCdmaRoamingPreference(android.os.Message)
+25.08 05:48:49  | V |     public abstract void com.android.internal.telephony.Phone.queryTTYMode(android.os.Message)
+25.08 05:48:49  | V |     public abstract void com.android.internal.telephony.Phone.registerFoT53ClirlInfo(android.os.Handler,int,java.lang.Object)
+25.08 05:48:49  | V |     public abstract void com.android.internal.telephony.Phone.registerForCallWaiting(android.os.Handler,int,java.lang.Object)
+25.08 05:48:49  | V |     public abstract void com.android.internal.telephony.Phone.registerForCdmaOtaStatusChange(android.os.Handler,int,java.lang.Object)
+25.08 05:48:49  | V |     public abstract void com.android.internal.telephony.Phone.registerForDisconnect(android.os.Handler,int,java.lang.Object)
+25.08 05:48:49  | V |     public abstract void com.android.internal.telephony.Phone.registerForDisplayInfo(android.os.Handler,int,java.lang.Object)
+25.08 05:48:49  | V |     public abstract void com.android.internal.telephony.Phone.registerForEcmTimerReset(android.os.Handler,int,java.lang.Object)
+25.08 05:48:49  | V |     public abstract void com.android.internal.telephony.Phone.registerForInCallVoicePrivacyOff(android.os.Handler,int,java.lang.Object)
+25.08 05:48:49  | V |     public abstract void com.android.internal.telephony.Phone.registerForInCallVoicePrivacyOn(android.os.Handler,int,java.lang.Object)
+25.08 05:48:49  | V |     public abstract void com.android.internal.telephony.Phone.registerForIncomingRing(android.os.Handler,int,java.lang.Object)
+25.08 05:48:49  | V |     public abstract void com.android.internal.telephony.Phone.registerForLineControlInfo(android.os.Handler,int,java.lang.Object)
+25.08 05:48:49  | V |     public abstract void com.android.internal.telephony.Phone.registerForMmiComplete(android.os.Handler,int,java.lang.Object)
+25.08 05:48:49  | V |     public abstract void com.android.internal.telephony.Phone.registerForMmiInitiate(android.os.Handler,int,java.lang.Object)
+25.08 05:48:49  | V |     public abstract void com.android.internal.telephony.Phone.registerForNewRingingConnection(android.os.Handler,int,java.lang.Object)
+25.08 05:48:49  | V |     public abstract void com.android.internal.telephony.Phone.registerForNumberInfo(android.os.Handler,int,java.lang.Object)
+25.08 05:48:49  | V |     public abstract void com.android.internal.telephony.Phone.registerForPreciseCallStateChanged(android.os.Handler,int,java.lang.Object)
+25.08 05:48:49  | V |     public abstract void com.android.internal.telephony.Phone.registerForRedirectedNumberInfo(android.os.Handler,int,java.lang.Object)
+25.08 05:48:49  | V |     public abstract void com.android.internal.telephony.Phone.registerForResendIncallMute(android.os.Handler,int,java.lang.Object)
+25.08 05:48:49  | V |     public abstract void com.android.internal.telephony.Phone.registerForRingbackTone(android.os.Handler,int,java.lang.Object)
+25.08 05:48:49  | V |     public abstract void com.android.internal.telephony.Phone.registerForServiceStateChanged(android.os.Handler,int,java.lang.Object)
+25.08 05:48:49  | V |     public abstract void com.android.internal.telephony.Phone.registerForSignalInfo(android.os.Handler,int,java.lang.Object)
+25.08 05:48:50  | V |     public abstract void com.android.internal.telephony.Phone.registerForSubscriptionInfoReady(android.os.Handler,int,java.lang.Object)
+25.08 05:48:50  | V |     public abstract void com.android.internal.telephony.Phone.registerForSuppServiceFailed(android.os.Handler,int,java.lang.Object)
+25.08 05:48:50  | V |     public abstract void com.android.internal.telephony.Phone.registerForSuppServiceNotification(android.os.Handler,int,java.lang.Object)
+25.08 05:48:50  | V |     public abstract void com.android.internal.telephony.Phone.registerForT53AudioControlInfo(android.os.Handler,int,java.lang.Object)
+25.08 05:48:50  | V |     public abstract void com.android.internal.telephony.Phone.registerForUnknownConnection(android.os.Handler,int,java.lang.Object)
+25.08 05:48:50  | V |     public abstract void com.android.internal.telephony.Phone.rejectCall() throws com.android.internal.telephony.CallStateException
+25.08 05:48:50  | V |     public abstract void com.android.internal.telephony.Phone.selectNetworkManually(com.android.internal.telephony.gsm.NetworkInfo,android.os.Message)
+25.08 05:48:50  | V |     public abstract void com.android.internal.telephony.Phone.sendBurstDtmf(java.lang.String,int,int,android.os.Message)
+25.08 05:48:50  | V |     public abstract void com.android.internal.telephony.Phone.sendDtmf(char)
+25.08 05:48:50  | V |     public abstract void com.android.internal.telephony.Phone.sendUssdResponse(java.lang.String)
+25.08 05:48:50  | V |     public abstract void com.android.internal.telephony.Phone.setBandMode(int,android.os.Message)
+25.08 05:48:50  | V |     public abstract void com.android.internal.telephony.Phone.setCBMessage(boolean,char,int,short[])
+25.08 05:48:50  | V |     public abstract boolean com.android.internal.telephony.Phone.setCSCCbConfig(boolean)
+25.08 05:48:50  | V |     public abstract boolean com.android.internal.telephony.Phone.setCallBarringOption(boolean,java.lang.String,java.lang.String,int,android.os.Message)
+25.08 05:48:50  | V |     public abstract boolean com.android.internal.telephony.Phone.setCallBarringOption(boolean,java.lang.String,java.lang.String,android.os.Message)
+25.08 05:48:50  | V |     public abstract void com.android.internal.telephony.Phone.setCallForwardingOption(int,int,java.lang.String,int,int,android.os.Message)
+25.08 05:48:50  | V |     public abstract void com.android.internal.telephony.Phone.setCallForwardingOption(int,int,java.lang.String,int,android.os.Message)
+25.08 05:48:50  | V |     public abstract void com.android.internal.telephony.Phone.setCallWaiting(boolean,android.os.Message)
+25.08 05:48:50  | V |     public abstract void com.android.internal.telephony.Phone.setCdmaRoamingPreference(int,android.os.Message)
+25.08 05:48:50  | V |     public abstract void com.android.internal.telephony.Phone.setCdmaSubscription(int,android.os.Message)
+25.08 05:48:50  | V |     public abstract void com.android.internal.telephony.Phone.setCellBroadcastSmsConfig(int[],android.os.Message)
+25.08 05:48:50  | V |     public abstract void com.android.internal.telephony.Phone.setDataRoamingEnabled(boolean)
+25.08 05:48:50  | V |     public abstract void com.android.internal.telephony.Phone.setEchoSuppressionEnabled(boolean)
+25.08 05:48:50  | V |     public abstract void com.android.internal.telephony.Phone.setLine1Number(java.lang.String,java.lang.String,android.os.Message)
+25.08 05:48:50  | V |     public abstract void com.android.internal.telephony.Phone.setLineId(int,android.os.Message)
+25.08 05:48:50  | V |     public abstract void com.android.internal.telephony.Phone.setMute(boolean)
+25.08 05:48:50  | V |     public abstract void com.android.internal.telephony.Phone.setNetworkSelectionModeAutomatic(android.os.Message)
+25.08 05:48:50  | V |     public abstract void com.android.internal.telephony.Phone.setOnEcbModeExitResponse(android.os.Handler,int,java.lang.Object)
+25.08 05:48:50  | V |     public abstract void com.android.internal.telephony.Phone.setOnPostDialCharacter(android.os.Handler,int,java.lang.Object)
+25.08 05:48:50  | V |     public abstract void com.android.internal.telephony.Phone.setOutgoingCallerIdDisplay(int,android.os.Message)
+25.08 05:48:50  | V |     public abstract void com.android.internal.telephony.Phone.setPreferredNetworkType(int,android.os.Message)
+25.08 05:48:50  | V |     public abstract void com.android.internal.telephony.Phone.setRadioPower(boolean)
+25.08 05:48:50  | V |     public abstract void com.android.internal.telephony.Phone.setSmscAddress(java.lang.String,android.os.Message)
+25.08 05:48:50  | V |     public abstract void com.android.internal.telephony.Phone.setTTYMode(int,android.os.Message)
+25.08 05:48:50  | V |     public abstract void com.android.internal.telephony.Phone.setUnitTestMode(boolean)
+25.08 05:48:50  | V |     public abstract void com.android.internal.telephony.Phone.setVoiceMailNumber(java.lang.String,java.lang.String,android.os.Message)
+25.08 05:48:50  | V |     public abstract void com.android.internal.telephony.Phone.startDtmf(char)
+25.08 05:48:50  | V |     public abstract void com.android.internal.telephony.Phone.stopDtmf()
+25.08 05:48:50  | V |     public abstract void com.android.internal.telephony.Phone.switchHoldingAndActive() throws com.android.internal.telephony.CallStateException
+25.08 05:48:50  | V |     public abstract void com.android.internal.telephony.Phone.unregisterForCallWaiting(android.os.Handler)
+25.08 05:48:50  | V |     public abstract void com.android.internal.telephony.Phone.unregisterForCdmaOtaStatusChange(android.os.Handler)
+25.08 05:48:50  | V |     public abstract void com.android.internal.telephony.Phone.unregisterForDisconnect(android.os.Handler)
+25.08 05:48:50  | V |     public abstract void com.android.internal.telephony.Phone.unregisterForDisplayInfo(android.os.Handler)
+25.08 05:48:50  | V |     public abstract void com.android.internal.telephony.Phone.unregisterForEcmTimerReset(android.os.Handler)
+25.08 05:48:50  | V |     public abstract void com.android.internal.telephony.Phone.unregisterForInCallVoicePrivacyOff(android.os.Handler)
+25.08 05:48:50  | V |     public abstract void com.android.internal.telephony.Phone.unregisterForInCallVoicePrivacyOn(android.os.Handler)
+25.08 05:48:50  | V |     public abstract void com.android.internal.telephony.Phone.unregisterForIncomingRing(android.os.Handler)
+25.08 05:48:50  | V |     public abstract void com.android.internal.telephony.Phone.unregisterForLineControlInfo(android.os.Handler)
+25.08 05:48:50  | V |     public abstract void com.android.internal.telephony.Phone.unregisterForMmiComplete(android.os.Handler)
+25.08 05:48:50  | V |     public abstract void com.android.internal.telephony.Phone.unregisterForMmiInitiate(android.os.Handler)
+25.08 05:48:50  | V |     public abstract void com.android.internal.telephony.Phone.unregisterForNewRingingConnection(android.os.Handler)
+25.08 05:48:50  | V |     public abstract void com.android.internal.telephony.Phone.unregisterForNumberInfo(android.os.Handler)
+25.08 05:48:50  | V |     public abstract void com.android.internal.telephony.Phone.unregisterForPreciseCallStateChanged(android.os.Handler)
+25.08 05:48:50  | V |     public abstract void com.android.internal.telephony.Phone.unregisterForRedirectedNumberInfo(android.os.Handler)
+25.08 05:48:50  | V |     public abstract void com.android.internal.telephony.Phone.unregisterForResendIncallMute(android.os.Handler)
+25.08 05:48:50  | V |     public abstract void com.android.internal.telephony.Phone.unregisterForRingbackTone(android.os.Handler)
+25.08 05:48:50  | V |     public abstract void com.android.internal.telephony.Phone.unregisterForServiceStateChanged(android.os.Handler)
+25.08 05:48:50  | V |     public abstract void com.android.internal.telephony.Phone.unregisterForSignalInfo(android.os.Handler)
+25.08 05:48:50  | V |     public abstract void com.android.internal.telephony.Phone.unregisterForSubscriptionInfoReady(android.os.Handler)
+25.08 05:48:50  | V |     public abstract void com.android.internal.telephony.Phone.unregisterForSuppServiceFailed(android.os.Handler)
+25.08 05:48:50  | V |     public abstract void com.android.internal.telephony.Phone.unregisterForSuppServiceNotification(android.os.Handler)
+25.08 05:48:50  | V |     public abstract void com.android.internal.telephony.Phone.unregisterForT53AudioControlInfo(android.os.Handler)
+25.08 05:48:50  | V |     public abstract void com.android.internal.telephony.Phone.unregisterForT53ClirInfo(android.os.Handler)
+25.08 05:48:50  | V |     public abstract void com.android.internal.telephony.Phone.unregisterForUnknownConnection(android.os.Handler)
+25.08 05:48:50  | V |     public abstract void com.android.internal.telephony.Phone.unsetOnEcbModeExitResponse(android.os.Handler)
+25.08 05:48:50  | V |     public abstract void com.android.internal.telephony.Phone.updateServiceLocation()
+25.08 05:48:50  | V | 
+
+
+25.08 05:48:50  | V | EncodedStringValue methods: public static [Lcom.google.android.mms.pdu.EncodedStringValue; com.google.android.mms.pdu.EncodedStringValue.extract(java.lang.String)
+public java.lang.String com.google.android.mms.pdu.EncodedStringValue.getString()
+25.08 05:48:51  | V | Somthing fired an Intent action
+25.08 05:48:51  | V | networkInfo = NetworkInfo: type: WIFI[EDGE], state: CONNECTED/CONNECTED, reason: (unspecified), extra: (none), roaming: false, failover: false, isAvailable: true
+25.08 05:48:51  | V | inetCondition = 0

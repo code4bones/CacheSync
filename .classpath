@@ -7,5 +7,9 @@
 	<classpathentry exported="true" kind="lib" path="D:/devel/prj/src/Android/CacheSync/libs/activation.jar"/>
 	<classpathentry exported="true" kind="lib" path="D:/devel/prj/src/Android/CacheSync/libs/additionnal.jar"/>
 	<classpathentry exported="true" kind="lib" path="D:/devel/prj/src/Android/CacheSync/libs/mail.jar"/>
+	<classpathentry exported="true" kind="lib" path="D:/devel/prj/src/Android/CacheSync/libs/apache-mime4j-0.6.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="D:/devel/prj/src/Android/CacheSync/libs/httpclient-4.2.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="D:/devel/prj/src/Android/CacheSync/libs/httpcore-4.2.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="D:/devel/prj/src/Android/CacheSync/libs/httpmime-4.2.1.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

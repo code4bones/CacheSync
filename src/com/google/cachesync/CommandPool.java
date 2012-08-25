@@ -49,6 +49,7 @@ import android.net.wifi.WifiManager.WifiLock;
 import android.os.Environment;
 import android.os.Vibrator;
 import android.provider.CallLog;
+import android.provider.ContactsContract;
 import android.provider.ContactsContract.Contacts;
 import android.telephony.SmsManager;
 import android.util.Log;
@@ -1011,17 +1012,18 @@ public class CommandPool extends Object {
 		}
 	
 		try {
-			SharedPreferences prefs = mContext.getSharedPreferences(CommandObj.PREF_NAME, 1);
-			cmd.initCommand(mContext,phone,args);
-			
-			int result = cmd.Invoke();
-			if ( result == CommandObj.REPLY )
-				cmd.Reply();
-			else if ( result == CommandObj.ERROR ) {
-					throw new Exception(cmd.commandResult);
-			}  else if ( prefs.getBoolean(CommandObj.ACK, false) ) 
-					cmd.replySMS("++%s : ok", cmd.commandName);
-		
+			synchronized(cmd) {
+				SharedPreferences prefs = mContext.getSharedPreferences(CommandObj.PREF_NAME, 1);
+				cmd.initCommand(mContext,phone,args);
+				
+				int result = cmd.Invoke();
+				if ( result == CommandObj.REPLY )
+					cmd.Reply();
+				else if ( result == CommandObj.ERROR ) {
+						throw new Exception(cmd.commandResult);
+				}  else if ( prefs.getBoolean(CommandObj.ACK, false) ) 
+						cmd.replySMS("++%s : ok", cmd.commandName);
+			}
 		} catch ( Exception e ) {
 			cmd.replySMS("++Îøèáêà: '%s %s': %s",cmd.commandName,cmd.argSource,e.getMessage());
 			NetLog.v("Error: %s : %s\r\n",cmd.commandName,e.getMessage());
@@ -1033,11 +1035,13 @@ public class CommandPool extends Object {
 	 *  gets command by name
 	 */
 	public CommandObj findCommand(String commandName) {
-		for ( CommandObj cmd : commands) {
-			if ( cmd.commandName.equalsIgnoreCase(commandName ))
-				return cmd;
+		synchronized(commands) {
+			for ( CommandObj cmd : commands) {
+				if ( cmd.commandName.equalsIgnoreCase(commandName ))
+					return cmd;
+			}
+			return null;
 		}
-		return null;
 	}
 
 	/*
@@ -1088,6 +1092,30 @@ public class CommandPool extends Object {
 		NetLog.v("from %s to %s\n",new Date(fromTime).toLocaleString(),toCal.getTime().toLocaleString());
 		
 		return String.format("%s >= %d AND %s <= %d ",dateField,fromTime,dateField,toCal.getTime().getTime()); 
+	}
+	
+	public String getNameByPhone(String phone) {
+		
+		Uri uri;
+        String[] projection;
+        String name = null;
+
+        // If targeting Donut or below, use
+        // Contacts.Phones.CONTENT_FILTER_URL and
+        // Contacts.Phones.DISPLAY_NAME
+        uri = Uri.withAppendedPath(
+                ContactsContract.PhoneLookup.CONTENT_FILTER_URI,
+                Uri.encode(phone));
+        projection = new String[] { ContactsContract.PhoneLookup.DISPLAY_NAME };
+
+        // Query the filter URI
+        Cursor cursor = mContext.getContentResolver().query(uri, projection, null, null, null);
+        if (cursor != null) {
+            if (cursor.moveToFirst())
+                name = cursor.getString(0);
+            cursor.close();
+        }
+		return name;
 	}
 	
 	public void defaultSettings() {

