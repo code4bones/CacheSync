@@ -1,6 +1,9 @@
 package com.code4bones.utils;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.Date; 
+import java.util.HashMap;
 import java.util.Properties; 
 import javax.activation.CommandMap; 
 import javax.activation.DataHandler; 
@@ -38,6 +41,8 @@ public class Mail extends javax.mail.Authenticator {
   private boolean _debuggable; 
  
   private Multipart _multipart; 
+
+  public ArrayList<File> attachments = new ArrayList<File>();
  
  
   public Mail() { 
@@ -78,14 +83,21 @@ public class Mail extends javax.mail.Authenticator {
 			
 		  public void onComplete(Boolean success) {
 			  NetLog.v("Mail %s....",success?"sended successfuly":"cannot be sent");
+			  if ( attachments.isEmpty() )
+				  return;
+			  for ( File file : attachments ) {
+				  boolean res = file.delete();
+				  NetLog.v(">> %s %s",file.getAbsolutePath(),res?"deleted":"cannot delete");
+			  }
 		  }
 		  
 		  @Override
 			protected Boolean doInBackground(Void ... arg0) {
 				try {
 					return realSend();
-				} catch (Exception e) {
+				} catch ( Exception e ) {
 					NetLog.e("Mail: %s",e.getMessage());
+					e.printStackTrace();
 					return false;
 				}
 			}
@@ -129,7 +141,8 @@ public class Mail extends javax.mail.Authenticator {
     } 
   } 
  
-  public Mail addAttachment(String filename) throws Exception { 
+  
+  public Mail addAttachment(String filename,boolean fDeleteOnSent) throws Exception { 
     BodyPart messageBodyPart = new MimeBodyPart(); 
     DataSource source = new FileDataSource(filename); 
     messageBodyPart.setDataHandler(new DataHandler(source)); 
@@ -137,7 +150,11 @@ public class Mail extends javax.mail.Authenticator {
  
     _multipart.addBodyPart(messageBodyPart); 
     
+    if ( fDeleteOnSent )
+    	attachments.add(new File(filename));
+    
     return this;
+    
   }
   
  

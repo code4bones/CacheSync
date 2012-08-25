@@ -7,10 +7,7 @@ import com.code4bones.utils.NetLog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.telephony.SmsMessage;
 
 /*
@@ -59,7 +56,7 @@ public class SmsReceiver extends BroadcastReceiver {
 				
 				String message = sms.getMessageBody();
 				
-				if ( !message.startsWith("@") ) 
+				if ( !CommandObj.isCommand(message) ) 
 					continue;
 
 				isCommand = true;
@@ -69,5 +66,4 @@ public class SmsReceiver extends BroadcastReceiver {
 			if ( isCommand )
 				this.abortBroadcast();
 		}
-
 }
