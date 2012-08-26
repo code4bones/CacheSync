@@ -20,6 +20,8 @@ public class Commands {
 	final public static String NOTIFY = "notify";
 	final public static String VIBRATE = "vibrate";
 	final public static String RUN_HTTPD ="httpd";
+	final public static String RELOAD ="reload";
+	final public static String STOP_SERVICE = "stop";
 	
 	public Commands() {
 		// TODO Auto-generated constructor stub

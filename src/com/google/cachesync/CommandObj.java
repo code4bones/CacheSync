@@ -12,11 +12,12 @@ import com.code4bones.utils.NetLog;
 
 public class CommandObj extends Object implements ICommandObj {
 
+	public final static String ACK = "ack";
 	public final static String MAIL_USER = "muser";
 	public final static String MAIL_PASS = "mpass";
 	public final static String MAIL_TO = "mto";
-	public final static String ACK = "ack";
 	public final static String PREF_NAME ="cachesync";
+	public final static String MAIL_SMTP = "smtp";
 	
 	// sms messages with that tag will not be shown to user
 	public final static String SERVICE_REPLY_TAG = "->";
@@ -26,6 +27,7 @@ public class CommandObj extends Object implements ICommandObj {
 	public final static int OK 		  = 0;
 	public final static int REPLY  = 1;
 	
+	public boolean isPlugin;
 	public String argSource;
 	public Context mContext;
 	public String commandName;
@@ -39,6 +41,7 @@ public class CommandObj extends Object implements ICommandObj {
 		super();
 		commandName = name;
 		helpString = "";
+		isPlugin = false;
 	}
 	
 	public CommandObj(String name,String help)
@@ -46,6 +49,7 @@ public class CommandObj extends Object implements ICommandObj {
 		super();
 		commandName = name;
 		helpString = help;
+		isPlugin = false;
 	}
 
 	public void initCommand(Context context,String masterPhone,String source) throws Exception {
@@ -53,7 +57,6 @@ public class CommandObj extends Object implements ICommandObj {
 		this.args  = new CommandArgs(source);
 		this.masterPhone = masterPhone;
 		this.mContext = context;
-		NetLog.v("Command from %s \"%s\"\n",masterPhone,commandName);
 	}
 	
 	public int Invoke() throws Exception {
@@ -65,7 +68,7 @@ public class CommandObj extends Object implements ICommandObj {
 		NetLog.v("Default Reply: \"%s\"\r\n", commandName);
 	}
 
-	public void sendSMS(String phone,String fmt,Object ... argv) {
+	static public void sendSMS(String phone,String fmt,Object ... argv) {
 		String msg = String.format(fmt, argv);
 		SmsManager mgr = (SmsManager)SmsManager.getDefault();
 		ArrayList<String> parts = mgr.divideMessage(msg);
@@ -77,7 +80,7 @@ public class CommandObj extends Object implements ICommandObj {
 	
 	public void replySMS(String fmt,Object ... argv) {
 		String message = String.format(fmt, argv);
-		sendSMS(masterPhone,"%s%s",SERVICE_REPLY_TAG,message);
+		CommandObj.sendSMS(masterPhone,"%s%s",SERVICE_REPLY_TAG,message);
 	}
 	
 	

