@@ -19,6 +19,8 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart; 
 import javax.mail.internet.MimeMessage; 
 import javax.mail.internet.MimeMultipart; 
+
+import android.os.Handler;
  
  
 public class Mail extends javax.mail.Authenticator { 
@@ -78,6 +80,10 @@ public class Mail extends javax.mail.Authenticator {
     _pass = pass; 
   } 
  
+  public void send(Handler handler) {
+	  
+  }
+  
   public void send() {
 	  BackgroundTask<Boolean,Void> task = new BackgroundTask<Boolean,Void>(null,false) {
 			

