@@ -3,6 +3,7 @@ package com.google.cachesync;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -11,7 +12,7 @@ public class CommandArgs extends Object {
 	final private HashMap<String,String> params = new HashMap<String,String>();
 	final private ArrayList<String> list = new ArrayList<String>();
 	
-	public CommandArgs(String source) throws Exception {
+	public CommandArgs(String source) {
 		
 		String[] param = source.split(";");
 		if ( param.length == 0 )
@@ -21,12 +22,20 @@ public class CommandArgs extends Object {
 			createParam(arg);
 	}
 
-	private void createParam(String param) throws Exception {
+	private void createParam(String param) {
+		
 		String[] keyVal = param.split(":");
-		if ( keyVal.length != 2 )
+		if ( keyVal.length == 0 || keyVal.length == 1 )
 			list.add(param);
-		else
-			params.put(keyVal[0], keyVal[1]);
+		else {
+			String key =keyVal[0];
+			String val = keyVal[1];
+
+			for ( int idx = 2; idx < keyVal.length; idx++ )
+				val = val.concat(":").concat(keyVal[idx]);
+			
+			params.put(key, val);
+		}
 	}
 
 	public boolean hasOpt(String key) {

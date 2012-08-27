@@ -10,7 +10,7 @@ import android.telephony.SmsManager;
 import com.code4bones.utils.Mail;
 import com.code4bones.utils.NetLog;
 
-public class CommandObj extends Object implements ICommandObj {
+public class CommandObj extends Object implements  ICommandObj {
 
 	public final static String ACK = "ack";
 	public final static String MAIL_USER = "muser";
@@ -36,6 +36,11 @@ public class CommandObj extends Object implements ICommandObj {
 	public CommandArgs args;
 	public String masterPhone;
 	
+	
+	
+	public CommandObj() {
+	}
+
 	
 	public CommandObj(String name) {
 		super();

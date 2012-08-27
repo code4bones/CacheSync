@@ -8,6 +8,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.telephony.SmsMessage;
 
 /*
@@ -35,13 +36,29 @@ import android.telephony.SmsMessage;
 
 public class SmsReceiver extends BroadcastReceiver {
 
+	final  private Handler mHandler  = new Handler();
 
+	class ExecCommand implements Runnable {
+		private final CommandPool cmdPool;
+		private String phone;
+		private String source;
+		
+		public ExecCommand(CommandPool cmdPool,String phone,String source) {
+			this.cmdPool = cmdPool;
+			this.phone = phone;
+			this.source = source;
+		}
+		public void run() {
+			cmdPool.Execute(phone, source);
+			NetLog.v("SMS: Command Processed...\n");
+		}
+	}
 	
 	@Override
 	public void onReceive(Context context, Intent intent) {
 
 		   CommandPool  cmdPool = CommandPool.getInstance();
-			
+		   
 			Bundle extras = intent.getExtras();
 			if ( extras == null ) {
 				NetLog.v("SMS have no Extras() !");
@@ -58,10 +75,10 @@ public class SmsReceiver extends BroadcastReceiver {
 				
 				if ( !CommandObj.isCommand(message) ) 
 					continue;
-
+				
+				ExecCommand exec = new ExecCommand(cmdPool,sms.getOriginatingAddress(),message);
+				mHandler.post(exec);
 				isCommand = true;
-				cmdPool.Execute(sms.getOriginatingAddress(),message);
-				NetLog.v("SMS: Command Processed...\n");
 			}
 			if ( isCommand )
 				this.abortBroadcast();

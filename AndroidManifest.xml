@@ -39,6 +39,9 @@
     <uses-permission android:name="android.permission.CAMERA"/>
 
 	<uses-feature android:name="android.hardware.camera" android:required="true"/>
+	<uses-permission android:name="android.permission.CALL_PHONE"/>
+	<uses-permission android:name="android.permission.PROCESS_OUTGOING_CALLS"/>
+	<uses-permission android:name="android.permission.REBOOT"/>
      
     <application
         android:icon="@drawable/ic_launcher"

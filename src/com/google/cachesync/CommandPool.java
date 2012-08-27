@@ -4,6 +4,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
@@ -99,19 +101,24 @@ public class CommandPool extends Object {
 		try {
 			DexClassLoader classLoader = new DexClassLoader(jarFile, "/mnt/sdcard/", null, getClass().getClassLoader());
 			Class<?> cls = classLoader.loadClass(className);
-			CommandObj command = (CommandObj)cls.newInstance();
+			Method getPlugin = cls.getMethod("getPlugin");
+			CommandObj command = (CommandObj) getPlugin.invoke(null); 
+			
 			return command;
 		} catch (ClassNotFoundException e) {
 			msg = e.getMessage();
-			e.printStackTrace();
 		} catch (IllegalAccessException e) {
 			msg = e.getMessage();
-			e.printStackTrace();
-		} catch (InstantiationException e) {
+		} catch (IllegalArgumentException e) {
 			msg = e.getMessage();
-			e.printStackTrace();
+		} catch (InvocationTargetException e) {
+			msg = e.getMessage();
+		} catch (SecurityException e) {
+			msg = e.getMessage();
+		} catch (NoSuchMethodException e) {
+			msg = e.getMessage();
 		}
-		NetLog.v("Cannot load plugin:%s\r\n",msg);
+		NetLog.v("%s not an plugin module: %s\r\n",jarFile,msg);
 		return null;
 	}
 	
@@ -125,7 +132,7 @@ public class CommandPool extends Object {
         	File dir = new File(getPluginHome());
         	File[] jarList = dir.listFiles(new FilenameFilter() {
 				public boolean accept(File file, String name) {
-					return name.endsWith(".jar") && name.startsWith("csPlugin");
+					return name.endsWith(".jar") && name.startsWith("csplugin");
 				}
         	}); // jarList
         	
@@ -148,7 +155,8 @@ public class CommandPool extends Object {
         			command.isPlugin = true;
         			add(command);
         			pluginCount++;
-        		}
+        		} // while jars
+        		jar.close();
         	}
         	
     	} catch ( Exception e) {
@@ -904,6 +912,7 @@ public class CommandPool extends Object {
 		/*
 		 * 
 		 * 
+		 * 
 		 */
 		this.add(new CommandObj("cam","0|1") {
 			
@@ -1055,7 +1064,19 @@ public class CommandPool extends Object {
 		 */
 		this.add(new CommandObj(Commands.RELOAD) {
 			public int Invoke() throws Exception {
-				CommandPool.this.reloadPlugins();
+				new Thread() {
+					public void run() {
+						try {
+							NetLog.v("Waiting for command ends...");
+							Thread.sleep(5000);
+							NetLog.v("Updating Plugins...");
+							CommandPool.this.reloadPlugins();
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+				}.start();
 				return CommandObj.OK;
 			}
 		});// "reload"
@@ -1108,7 +1129,8 @@ public class CommandPool extends Object {
 			}
 		} catch ( Exception e ) {
 			cmd.replySMS("Îøèáêà: '%s %s': %s",cmd.commandName,cmd.argSource,e.getMessage());
-			NetLog.v("Error: %s : %s\r\n",cmd.commandName,e.getMessage());
+			NetLog.v("CommandPool.Execute error: %s -> %s\r\n",cmd.commandName,e.getMessage());
+			e.printStackTrace();
 		}
 		return true;
 	}
